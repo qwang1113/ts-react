@@ -26,6 +26,12 @@
       "@stores/*": [
         "stores/*"
       ],
+      "@less/*": [
+        "assets/less/*"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
     },
     "jsx": "react",
     "alwaysStrict": true,

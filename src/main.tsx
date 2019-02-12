@@ -2,17 +2,24 @@ import * as React from 'react';
 import { configure } from 'mobx';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
-
-import userStore from '@stores/user';
-import App from '@components/App/App';
+import createHashHistory from 'history/createHashHistory';
+import { syncHistoryWithStore } from 'mobx-react-router';
+import { Router } from 'react-router-dom';
+import * as store from './stores';
+import App from '@components/App';
 
 import './index.less';
 
 configure({ enforceActions: 'observed' });
 
+const hashHistory = createHashHistory();
+const history = syncHistoryWithStore(hashHistory, store.routerStore);
+
 render(
-  <Provider user={userStore}>
-    <App />
+  <Provider {...store}>
+    <Router history={history}>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById('app')
 );

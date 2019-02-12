@@ -10,9 +10,9 @@ export default () => {
       <Button 
         title="Button" 
         type="primary" 
-        onClick={setCount.bind(null, count + 1)}
+        onClick={() => setCount(count + 1)}
       >
-        按钮{count}
+        关于{count}
       </Button>
     </div>
   )
