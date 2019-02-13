@@ -1,19 +1,13 @@
-import { Button } from 'antd';
 import * as React from 'react';
+import BaseComponent from '@components/Base';
 
-export default () => {
-
-  const [count, setCount] = React.useState(0);
-
-  return (
-    <div className='main'>
-      <Button 
-        title="Button" 
-        type="primary" 
-        onClick={() => setCount(count + 1)}
-      >
-        关于{count}
-      </Button>
-    </div>
-  )
+class About extends BaseComponent<{}, {}>{
+  render() {
+    return (
+      <div>about</div>
+    );
+  }
 }
+
+
+export default About;

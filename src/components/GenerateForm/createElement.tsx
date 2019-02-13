@@ -150,6 +150,7 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
         break;
       case 'Select':
         {
+          props.allowClear = true;
           const labelOptions = this.getOptionList(type, options);
           children = labelOptions.map((opt: ISelectOption) => {
             return (

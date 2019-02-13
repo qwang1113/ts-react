@@ -1,62 +1,60 @@
-.form-container {
+.form-content{
   .padLeft{
     padding-left: 6em;
   }
-  .form-content{
-    .ant-calendar-picker{
-      width: 100%;
+  .ant-calendar-picker{
+    width: 100%;
+  }
+  &.col-1{
+    .ant-form-item{
+      width: 290px;
     }
-    &.col-1{
-      .ant-form-item{
-        width: 290px;
-      }
-    }
-    &.col-2{
+  }
+  &.col-2{
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    .ant-form-item{
+      padding-right: 30px;
+      width: 40%;
       display: flex;
       align-items: flex-start;
-      flex-wrap: wrap;
-      .ant-form-item{
-        padding-right: 30px;
-        width: 40%;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        .ant-form-item-label{
-          width: 6em;
-          text-overflow: ellipsis;
-          padding-right: 5px;
-          .ant-form-item-required:before{
-            display: inline;
-          }
-        }
-        .ant-form-item-control-wrapper{
-          width: 50%;
+      justify-content: flex-start;
+      .ant-form-item-label{
+        width: 10em;
+        text-overflow: ellipsis;
+        padding-right: 5px;
+        .ant-form-item-required:before{
+          display: inline;
         }
       }
-    }
-    &.col-3{
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      .ant-form-item{
-        padding-right: 30px;
-        width: 30%;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        .ant-form-item-label{
-          width: 6em;
-          text-overflow: ellipsis;
-          padding-right: 5px;
-          .ant-form-item-required:before{
-            display: inline;
-          }
-        }
-        .ant-form-item-control-wrapper{
-          width: 80%;
-        }
+      .ant-form-item-control-wrapper{
+        width: 50%;
       }
     }
   }
-  
+  &.col-3{
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    .ant-form-item{
+      padding-right: 30px;
+      width: 30%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      .ant-form-item-label{
+        width: 6em;
+        text-overflow: ellipsis;
+        padding-right: 5px;
+        .ant-form-item-required:before{
+          display: inline;
+        }
+      }
+      .ant-form-item-control-wrapper{
+        width: 80%;
+      }
+    }
+  }
 }
+  

@@ -8,18 +8,15 @@ import { isEmpty } from 'lodash';
 import {
   FormComponentProps,
 } from 'antd/lib/form/Form';
-
 import CreateElement, {
   IFormItemProps
 } from './createElement';
-
 import './index.less';
-import FormItem from '_antd@3.10.8@antd/lib/form/FormItem';
 
 interface IFormProps {
   className?: string; // 类名
   style?: object; // 样式
-  cols?: 1 | 2 | 3; // 表单元素分几列展示
+  cols?: 1 | 2; // 表单元素分几列展示
   items: IFormItemProps[];
   onSubmit?: (values: any) => void;
   btnText?: string;
@@ -28,7 +25,7 @@ interface IFormProps {
 class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> {
 
   static defaultProps: Partial<IFormProps & FormComponentProps> = {
-    cols: 1
+    cols: 2
   };
 
   /**
@@ -105,6 +102,7 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
     e.preventDefault();
     this.props.form.validateFields((err, values: { index?: any, key?: any }) => {
       if (!err) {
+        console.log(values);
         // format upload result;
         const uploadComponents = this.props.items.filter(item => item.type === 'Upload');
         if (uploadComponents) {
@@ -131,41 +129,30 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
   render() {
     const {
       cols,
-      style,
       items,
-      className = '',
       form: {
         getFieldDecorator
       }
     } = this.props;
     return (
-      <Form
-        style={style}
-        onSubmit={this.handleSubmit}
-        className="form-container"
-      >
-        <div className={`form-content ${className} col-${cols}`}>
-          {items.map((item: IFormItemProps) => {
-            return (
-              <Form.Item
-                key={item.dataKey}
-                {...this.generateItemOptions(item)}
-              >
-                {
-                  getFieldDecorator(item.dataKey, this.generateFieldDecorator(item))(
-                    <CreateElement {...item} />
-                  )
-                }
-              </Form.Item>
-            );
-          })}
-        </div>
-        <FormItem className={cols > 1 ? 'padLeft' : ''}>
-          <Button type="primary" htmlType="submit">{this.props.btnText || '保存'}</Button>
-        </FormItem>
-      </Form>
+      <div className={`form-content col-${cols}`}>
+        {items.map((item: IFormItemProps) => {
+          return (
+            <Form.Item
+              key={item.dataKey}
+              {...this.generateItemOptions(item)}
+            >
+              {
+                getFieldDecorator(item.dataKey, this.generateFieldDecorator(item))(
+                  <CreateElement {...item} />
+                )
+              }
+            </Form.Item>
+          );
+        })}
+      </div>
     );
   }
 }
 
-export default Form.create<{}>()(GenerateForm);
+export default GenerateForm;
