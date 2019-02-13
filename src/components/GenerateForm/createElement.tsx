@@ -30,7 +30,7 @@ interface IComponents {
 }
 
 interface IFormItemBase {
-  label: string;
+  label?: string;
   required?: boolean;
   style?: React.CSSProperties;
 
@@ -46,8 +46,8 @@ interface IFormItemBase {
 }
 
 export interface ISelectOption {
-  value: string | number;
-  label: string;
+  value?: string | number;
+  label?: string;
   key?: string;
   disabled?: boolean;
 }

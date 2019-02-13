@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   Form,
-  Button,
 } from 'antd';
 import { isEmpty } from 'lodash';
 
@@ -132,10 +131,11 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
       items,
       form: {
         getFieldDecorator
-      }
+      },
+      className
     } = this.props;
     return (
-      <div className={`form-content col-${cols}`}>
+      <div className={`form-content col-${cols} ${className||''}`}>
         {items.map((item: IFormItemProps) => {
           return (
             <Form.Item

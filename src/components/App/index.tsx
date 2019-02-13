@@ -8,6 +8,7 @@ import Loading from '@components/Loading';
 const AppWrapper = props => <div className="appWrapper">{props.children}</div>;
 
 const Home = lazy(() => import('@components/Home'));
+const Login = lazy(() => import('@pages/Login'));
 const NotFound = lazy(() => import('@components/NotFound'));
 
 class AppRouter extends Component<{}> {
@@ -17,6 +18,7 @@ class AppRouter extends Component<{}> {
         <Router>
           <React.Suspense fallback={<Loading />}>
             <Switch>
+              <Route exact path="/login" component={() => <Login />} />
               <Route path="/" component={() => <Home />} />
               {/* <PrivateRoute path="/" component={Home} /> */}
               <Route component={() => <NotFound />} />

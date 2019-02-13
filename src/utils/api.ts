@@ -6,13 +6,13 @@ export const baseUrl = '/api';
 const generate = async response => {
   const res = await response;
   const result = await res.json();
-  switch (result.code) {
+  switch (res.status) {
     case 200:
-      return result.data || {};
+      return result || {};
     case 403:
       location.href = '/#/login';
     default:
-      message.error(result.message);
+      message.error(result.message || '操作失败');
   }
   return null;
 };

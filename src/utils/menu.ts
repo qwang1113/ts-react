@@ -1,12 +1,4 @@
-import { lazy, LazyExoticComponent, ComponentElement } from 'react';
-
-// export const asynchronousComponents = {
-//   Home: lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home')),
-//   About: lazy(() => import( /* webpackChunkName: "About" */ '@pages/About')),
-// };
-
-// // 所有路由的key
-// export type AsynchronousComponentKeys = keyof typeof asynchronousComponents;
+import { lazy } from 'react';
 
 export interface IMenu {
   title: string;
@@ -15,7 +7,7 @@ export interface IMenu {
   exact?: boolean;
   showInMenu?: boolean;
   children?: IMenu[];
-  component?: LazyExoticComponent<() => ComponentElement<{}, any>>
+  component?: any
 }
 
 export const menu: IMenu[] = [
@@ -26,10 +18,10 @@ export const menu: IMenu[] = [
     component: lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home')),
   },
   {
-    path: '/about',
-    title: '关于',
-    icon: 'setting',
-    component: lazy(() => import( /* webpackChunkName: "About" */ '@pages/About'))
+    path: '/user-manager',
+    title: '用户管理',
+    icon: 'user',
+    component: lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/UserManager'))
   },
 ];
 

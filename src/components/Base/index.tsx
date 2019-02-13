@@ -1,12 +1,17 @@
 import { message } from "antd";
 import React from 'react';
-import { WrappedFormUtils } from '_antd@3.10.8@antd/lib/form/Form';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
+import {Get, Post, Put} from "@utils/api";
 
 export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
 
   $message = message;
 
-  $getFormValue = (form: WrappedFormUtils) => {
+  $Get = Get
+  $Post = Post
+  $Put = Put
+
+  $getFormValue = (form: WrappedFormUtils):Promise<any> => {
     return new Promise((resolve, reject) => {
       if(!form){
         reject('form is invalid');
