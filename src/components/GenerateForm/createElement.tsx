@@ -175,6 +175,9 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
           });
         }
         break;
+      case 'TextArea':
+        props.rows = 5;
+        break;
       default:
         break;
     }

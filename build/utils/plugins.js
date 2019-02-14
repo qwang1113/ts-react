@@ -30,7 +30,8 @@ const devPlugins = [
   new HtmlWebpackPlugin({
     filename: 'index.html',
     template: 'build/templates/index.html',
-    inject: true
+    inject: true,
+    title: config.AppTitle
   }),
   new CaseSensitivePathsPlugin(),
   new webpack.HotModuleReplacementPlugin()

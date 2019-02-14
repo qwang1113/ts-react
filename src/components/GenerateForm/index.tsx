@@ -129,13 +129,13 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
     const {
       cols,
       items,
-      form: {
-        getFieldDecorator
-      },
-      className
+      form,
+      className = '',
+      style = {}
     } = this.props;
+    const { getFieldDecorator } = form;
     return (
-      <div className={`form-content col-${cols} ${className||''}`}>
+      <div className={`form-content col-${cols} ${className || ''}`} style={style}>
         {items.map((item: IFormItemProps) => {
           return (
             <Form.Item

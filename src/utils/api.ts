@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { getCookie } from '@utils/index';
+import { getStorage } from '@utils/index';
 
 export const baseUrl = '/api';
 
@@ -27,7 +27,7 @@ export const Put = async (url: string, data): Promise<any> => {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getCookie('token')}`
+      'Authorization': `Bearer ${getStorage('token')}`
     },
   }));
 };
@@ -38,7 +38,7 @@ export const Post = async (url: string, data): Promise<any> => {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getCookie('token')}`
+      'Authorization': `Bearer ${getStorage('token')}`
     },
   }));
 };

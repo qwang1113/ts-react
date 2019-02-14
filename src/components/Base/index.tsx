@@ -1,7 +1,7 @@
 import { message } from "antd";
 import React from 'react';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import {Get, Post, Put} from "@utils/api";
+import { Get, Post, Put } from "@utils/api";
 
 export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
 
@@ -11,9 +11,9 @@ export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>
   $Post = Post
   $Put = Put
 
-  $getFormValue = (form: WrappedFormUtils):Promise<any> => {
+  $getFormValue = (form: WrappedFormUtils): Promise<any> => {
     return new Promise((resolve, reject) => {
-      if(!form){
+      if (!form) {
         reject('form is invalid');
       }
       form.validateFieldsAndScroll((err, val) => {

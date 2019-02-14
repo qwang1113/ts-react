@@ -15,7 +15,7 @@ import { inject, observer } from 'mobx-react';
 import Sider from '@components/Sider';
 import NotFound from '@components/NotFound';
 import Header from '@components/Header';
-import { getRoutesByPath } from '@utils/index';
+import { getRoutesByPath, getStorage } from '@utils/index';
 
 import menu, { IMenu } from '../../utils/menu';
 import './index.less';
@@ -95,7 +95,14 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
     return routes;
   }
 
+  componentDidMount(){
+    if(!getStorage('token')){
+      location.href = '/#/login';
+    }
+  }
+
   render() {
+    const home = menu[0].path;
     return (
       <Layout>
         <Sider />
@@ -104,13 +111,13 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
           <Layout.Content className="content">
             <Breadcrumb style={{ display: 'block' }}>
               <Breadcrumb.Item>
-                <Link to="/">主页</Link>
+                <Link to={home}>主页</Link>
               </Breadcrumb.Item>
               {this.createBreadCrumb()}
             </Breadcrumb>
             <Router>
               <Switch>
-                <Route exact path="/" render={() => (<Redirect to="/home" />)} />
+                <Route exact path="/" render={() => (<Redirect to={home} />)} />
                 {this.createRoutes(menu)}
                 <Route component={() => <NotFound />} />
               </Switch>

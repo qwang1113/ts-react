@@ -2,6 +2,15 @@ import * as React from 'react';
 import BaseComponent from '@components/Base';
 
 class About extends BaseComponent<{}, {}>{
+  componentDidMount(){
+    this.fetchData();
+  }
+
+  async fetchData() {
+    const res = await this.$Get('/users?size=10');
+    console.log(res);
+  }
+
   render() {
     return (
       <div>about</div>

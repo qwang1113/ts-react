@@ -39,7 +39,7 @@ class Home extends BaseComponent<FormComponentProps, {}>{
           dataKey: 'DatePicker',
           type: 'DatePicker',
           placeholder: '请选择...'
-        }]}/>
+        }]} />
         <GenerateForm form={form} items={[{
           label: '单文件上传',
           dataKey: 'Upload',
@@ -49,12 +49,12 @@ class Home extends BaseComponent<FormComponentProps, {}>{
           dataKey: 'MultiUpload',
           type: 'Upload',
           max: 3
-        }]}/>
+        }]} />
         <GenerateForm form={form} items={[{
           label: '开关',
           dataKey: 'Switch',
           type: 'Switch',
-        }]}/>
+        }]} />
         <GenerateForm form={form} items={[{
           label: '单选',
           dataKey: 'Radio',
@@ -66,7 +66,7 @@ class Home extends BaseComponent<FormComponentProps, {}>{
             label: '梨',
             value: 1
           }]
-        }]}/>
+        }]} />
         <GenerateForm form={form} items={[{
           label: '多选',
           dataKey: 'CheckBox',
@@ -78,21 +78,25 @@ class Home extends BaseComponent<FormComponentProps, {}>{
             label: '梨',
             value: 1
           }]
-        }]}/>
+        }]} />
         <GenerateForm form={form} items={[{
           label: '评分',
           dataKey: 'Rate',
           type: 'Rate',
-        }]}/>
-        <GenerateForm form={form} items={[{
-          label: '文本域',
-          dataKey: 'TextArea',
-          type: 'TextArea',
-          required: true,
-          initialValue: '我是文本域'
-        }]}/>
-        <Form.Item>
-          <Button onClick={this.handleSubmit}>提交</Button>
+        }]} />
+        <GenerateForm
+          form={form}
+          items={[{
+            label: '文本域',
+            dataKey: 'TextArea',
+            type: 'TextArea',
+            required: true,
+            initialValue: '我是文本域'
+          }]} 
+          style={{display: 'none'}}
+        />
+        <Form.Item style={{ paddingLeft: '10em' }}>
+          <Button onClick={this.handleSubmit} type="primary">提交</Button>
         </Form.Item>
       </Form>
     );
