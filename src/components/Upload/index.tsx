@@ -2,10 +2,10 @@ import * as React from 'react';
 import {
   Icon,
   Upload as UploadComponent,
-  message
 } from 'antd';
+import BaseComponent from '@components/Base';
 
-export default class Upload extends React.Component<{ max: number } & any> {
+export default class Upload extends BaseComponent<{ max: number } & any> {
   state = {
     fileNum: 0
   };
@@ -14,7 +14,7 @@ export default class Upload extends React.Component<{ max: number } & any> {
     const { file } = files;
     const { onChange } = this.props;
     if (file.status === 'error') {
-      message.error('文件上传失败');
+      this.$error('文件上传失败');
     }
     onChange && onChange(files);
   }

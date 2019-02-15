@@ -7,7 +7,10 @@ class About extends BaseComponent<{}, {}>{
   }
 
   async fetchData() {
-    const res = await this.$Get('/users?size=10');
+    const res = await this.$Get('/users', {
+      page: 0,
+      size: 10
+    });
     console.log(res);
   }
 

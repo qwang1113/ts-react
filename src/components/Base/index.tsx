@@ -11,6 +11,11 @@ export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>
   $Post = Post
   $Put = Put
 
+  $error = (msg) => {
+    message.destroy();
+    message.error(msg);
+  }
+
   $getFormValue = (form: WrappedFormUtils): Promise<any> => {
     return new Promise((resolve, reject) => {
       if (!form) {
