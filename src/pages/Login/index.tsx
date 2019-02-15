@@ -17,8 +17,8 @@ class Login extends BaseComponent<FormComponentProps, {}>{
   setLoading = loading => this.loading = loading;
 
   submit = async () => {
-    this.setLoading(true);
     const params = await this.$getFormValue(this.props.form);
+    this.setLoading(true);
     const res = await this.$Post('/user/login', {
       ...params,
       password: md5(params.password)
@@ -54,18 +54,22 @@ class Login extends BaseComponent<FormComponentProps, {}>{
               items={[{
                 dataKey: 'name',
                 type: 'Input',
+                required: true,
                 placeholder: '用户名...',
                 componentProps: {
                   autoComplete: 'username'
-                }
+                },
+                label: '用户名',
               }, {
                 dataKey: 'password',
                 type: 'Input',
+                required: true,
                 placeholder: '密码...',
+                label: '密码',
                 componentProps: {
                   type: 'password',
                   autoComplete: 'current-password'
-                }
+                },
               }]}
             />
             <Button

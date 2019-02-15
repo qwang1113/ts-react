@@ -11,7 +11,14 @@ const headers = {
 
 const generate = async response => {
   const res = await response;
-  const result = await res.json();
+  let result;
+  try {
+    result = await res.json();
+  } catch (error) {
+    message.destroy();
+    message.error('网络异常');
+    return null;
+  }
   switch (res.status) {
     case 200:
       return result || {};
