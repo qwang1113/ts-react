@@ -3,7 +3,7 @@ import { configure } from 'mobx';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
 import createHashHistory from 'history/createHashHistory';
-import { syncHistoryWithStore } from 'mobx-react-router';
+import { syncHistoryWithStore, SynchronizedHistory } from 'mobx-react-router';
 import { Router } from 'react-router-dom';
 import * as store from './stores';
 import App from '@components/App';
@@ -13,7 +13,7 @@ import './index.less';
 configure({ enforceActions: 'observed' });
 
 const hashHistory = createHashHistory();
-const history = syncHistoryWithStore(hashHistory, store.routerStore);
+const history: SynchronizedHistory & any = syncHistoryWithStore(hashHistory, store.routerStore);
 
 render(
   <Provider {...store}>

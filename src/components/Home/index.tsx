@@ -38,6 +38,13 @@ interface Props {
 @observer
 class Home extends React.Component<RouteComponentProps & Props, {}> {
 
+  constructor(props){
+    super(props);
+    if(!getStorage('token')){
+      location.href = '/#/login';
+    }
+  }
+
   state = {};
 
   /**
@@ -93,12 +100,6 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
       }
     }
     return routes;
-  }
-
-  componentDidMount(){
-    if(!getStorage('token')){
-      location.href = '/#/login';
-    }
   }
 
   render() {
