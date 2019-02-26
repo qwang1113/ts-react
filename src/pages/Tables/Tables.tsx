@@ -5,41 +5,22 @@ import "./Tables.less";
 import Table from '@components/Table/Table';
 
 const filterList = [{
-  label: '普通输入框',
-  dataKey: 'Input',
+  label: '用户名',
+  dataKey: 'search',
   type: 'Input',
   placeholder: '请输入...'
-}, {
-  label: '普通输入框(禁用)',
-  dataKey: 'disableInput',
-  type: 'Input',
-  placeholder: '请输入...',
-  componentProps: {
-    disabled: true
-  }
-}, {
-  label: '选择框',
-  dataKey: 'Select',
-  type: 'Select',
-  options: [{
-    label: '测试1',
-    value: 0
-  }]
-}, {
-  label: '日期选择',
-  dataKey: 'DatePicker',
-  type: 'DatePicker',
-  placeholder: '请选择...'
 }];
 
-class About extends BaseComponent<{}, {}>{
-  componentDidMount(){
-    this.fetchData();
-  }
-
-  async fetchData() {
-    
-  }
+class Tables extends BaseComponent<{}, {}>{
+  columns = [{
+    title: '姓名',
+    dataIndex: 'name',
+    key: 'name',
+  }, {
+    title: '创建时间',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+  }]
 
   render() {
     return (
@@ -47,6 +28,9 @@ class About extends BaseComponent<{}, {}>{
         <Table
           showFilter
           filterList={filterList}
+          url="/users"
+          params={{order_func: 'ASC', order_by: 'id'}}
+          columns={this.columns}
         />
       </div>
     );
@@ -54,4 +38,4 @@ class About extends BaseComponent<{}, {}>{
 }
 
 
-export default About;
+export default Tables;

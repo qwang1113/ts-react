@@ -12,7 +12,7 @@ import CreateElement, {
   IFormItemProps
 } from './createElement';
 import './index.less';
-import { ButtonProps } from '_antd@3.10.8@antd/lib/button';
+import { ButtonProps } from 'antd/lib/button';
 
 interface IFormSubmitButton {
   text: string;

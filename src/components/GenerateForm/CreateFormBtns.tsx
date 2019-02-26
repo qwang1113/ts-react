@@ -4,7 +4,7 @@ import {
   Button
 } from 'antd';
 import './index.less';
-import { ButtonProps } from '_antd@3.10.8@antd/lib/button';
+import { ButtonProps } from 'antd/lib/button';
 
 interface IFormSubmitButton {
   text: string;
@@ -31,23 +31,24 @@ class GenerateFormBtns extends React.Component<IFormProps, {}> {
       btns
     } = this.props;
     return (
-      <Form.Item 
-        className={`form-btns col-${cols} ${className}`}
-        style={style}
-      >
-        {Array.isArray(btns) && btns.map((item, idx) => {
-          const { text, style, ...props } = item;
-          return (
-            <Button
-              key={item.title || idx}
-              {...props}
-              style={{ marginRight: 20, ...style }}
-            >
-              {text}
-            </Button>
-          );
-        })}
-      </Form.Item>
+      <div className={`form-content form-btns col-${cols} ${className || ''}`} style={style}>
+        <Form.Item
+          label="操作按钮"
+        >
+          {Array.isArray(btns) && btns.map((item, idx) => {
+            const { text, style, ...props } = item;
+            return (
+              <Button
+                key={item.title || idx}
+                {...props}
+                style={{ marginRight: 20, ...style }}
+              >
+                {text}
+              </Button>
+            );
+          })}
+        </Form.Item>
+      </div>
     );
   }
 }

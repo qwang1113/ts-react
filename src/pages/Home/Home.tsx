@@ -1,4 +1,4 @@
-import { Form, Button } from 'antd';
+import { Form } from 'antd';
 import * as React from 'react';
 import { FormComponentProps } from 'antd/lib/form';
 import BaseComponent from '@components/Base';
@@ -10,6 +10,11 @@ class Home extends BaseComponent<FormComponentProps, {}>{
     const values = await this.$getFormValue(this.props.form);
     console.log(values);
   }
+
+  componentDidMount(){
+    console.log(222);
+  }
+
   render() {
     const { form } = this.props;
     return (

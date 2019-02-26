@@ -24,6 +24,10 @@ interface IStoreProps {
 @observer
 class Sider extends React.Component<IStoreProps> {
 
+  componentDidMount(){
+    console.log(444);
+  }
+
   render() {
     const { sideBarCollapsed, sideBarTheme } = this.props;
     return (

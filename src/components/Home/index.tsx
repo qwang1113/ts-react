@@ -8,7 +8,7 @@ import {
   HashRouter as Router,
 } from 'react-router-dom';
 import * as React from 'react';
-import { hot } from 'react-hot-loader';
+// import { hot } from 'react-hot-loader';
 import { Layout, Breadcrumb } from 'antd';
 import { inject, observer } from 'mobx-react';
 
@@ -25,7 +25,7 @@ interface Props {
   setSelectedKey?: (selectedKey: string) => void;
 }
 
-@hot(module)
+// @hot(module)
 @inject(
   (store: IStore): Props => {
     const { globalStore: { setSelectedKey, selectedKey } } = store;
@@ -46,6 +46,10 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
   }
 
   state = {};
+
+  componentDidMount(){
+    console.log(333);
+  }
 
   /**
    * 监听路由变化, 将更新映射到globalStore的selectedKey中

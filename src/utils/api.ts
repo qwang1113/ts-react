@@ -23,6 +23,8 @@ const generate = async response => {
     case 200:
       return result || {};
     case 403:
+      document.cookie = '';
+      sessionStorage.clear();
       location.href = '/#/login';
     default:
       message.destroy();

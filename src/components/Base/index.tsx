@@ -27,8 +27,11 @@ class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
         reject('form is invalid');
       }
       form.validateFieldsAndScroll((err, val) => {
-        err && reject(err);
-        resolve(val);
+        if(err){
+          reject(err);
+        } else {
+          resolve(val);
+        }
       })
     })
   }

@@ -5,8 +5,10 @@ import {
   HashRouter as Router,
   RouteComponentProps
 } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
+import { LocaleProvider } from 'antd';
+// import { hot } from 'react-hot-loader';
 import React, { useEffect } from 'react';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
 
 import './index.less';
 import Loading from '@components/Loading';
@@ -25,18 +27,21 @@ const AppRouter = (props: RouteComponentProps) => {
     document.title = routes.pop().title;
   });
   return (
-    <AppWrapper>
-      <Router>
-        <React.Suspense fallback={<Loading />}>
-          <Switch>
-            <Route exact path="/login" component={() => <Login />} />
-            <Route path="/" component={() => <PublicHome />} />
-            <Route component={() => <NotFound />} />
-          </Switch>
-        </React.Suspense>
-      </Router>
-    </AppWrapper>
+    <LocaleProvider locale={zhCN}>
+      <AppWrapper>
+        <Router>
+          <React.Suspense fallback={<Loading />}>
+            <Switch>
+              <Route exact path="/login" component={() => <Login />} />
+              <Route path="/" component={() => <PublicHome />} />
+              <Route component={() => <NotFound />} />
+            </Switch>
+          </React.Suspense>
+        </Router>
+      </AppWrapper>
+    </LocaleProvider>
   );
 }
 
-export default hot(module)(withRouter(AppRouter));
+export default withRouter(AppRouter);
+// export default hot(module)(withRouter(AppRouter));

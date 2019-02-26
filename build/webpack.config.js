@@ -52,7 +52,7 @@ module.exports = {
         target: 'http://localhost:3002/',
         secure: false,
         changeOrigin: true,
-        pathRewrite: { '^/api/': '' }
+        pathRewrite: { '^/api': '' }
       }
     }
   }

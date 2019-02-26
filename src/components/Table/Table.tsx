@@ -19,7 +19,9 @@ interface IState {
 
 interface IProps extends TableProps<{}> {
   showFilter?: boolean;
-  filterList?: IFormItemProps[]
+  filterList?: IFormItemProps[];
+  url?: string;
+  params?: object;
 }
 
 class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
@@ -33,7 +35,18 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   }
 
   componentDidMount() {
-    this.fetchData();
+    console.log(111);
+    const {url, dataSource} = this.props;
+    // 获取缓存的size
+    const size = localStorage.getItem('tableSize') || 10;
+    this.setState({size: +size})
+    if(Array.isArray(dataSource)){
+      this.setState({data: dataSource});
+    } else if(url){
+      this.fetchData();
+    } else {
+      console.error('the url prop or dataSource must has one');
+    }
   }
 
   changePage = (page, pageSize, ) => {
@@ -49,6 +62,8 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
    * @param size
    */
   changePageSize = (current, size) => {
+    // 将更改的size缓存到storage中
+    localStorage.setItem('tableSize', size);
     this.setState({
       page: 0,
       size: size,
@@ -58,7 +73,8 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   /**
    * 重置搜索条件并重置页面
   */
-  resetParams = () => {
+ resetFilter = () => {
+    this.props.form.resetFields();
     this.setState({
       size: 10,
       page: 0,
@@ -66,7 +82,29 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   };
 
   async fetchData() {
-
+    const {size, page} = this.state;
+    const {url, params} = this.props;
+    this.setState({
+      loading: true
+    });
+    const filterValues = await this.$getFormValue(this.props.form);
+    const res = await this.$Get(url, {
+      ...params,
+      ...filterValues,
+      size,
+      page
+    });
+    if(res){
+      const {content, total} = res;
+      this.setState(({page}) => {
+        return {
+          page: total === content.length ? page : page + 1,
+          total: total,
+          data: content,
+          loading: false
+        }
+      })
+    }
   }
 
   render() {
@@ -83,29 +121,32 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
       columns,
       showFilter,
       filterList,
+      className,
       ...props
     } = this.props;
     const rowKeyFunc = typeof rowKey === 'function'
       ? rowKey
       : (record: IDataRow) => `${record.id}`;
     return (
-      <div className="app-table">
+      <div className="app-table" style={{backgroundColor: '#fff'}}>
         {
           showFilter && (
             <div className="app-table-search-bar">
               <Form>
                 <GenerateForm
-                  cols={3}
+                  cols={4}
                   form={form}
                   items={filterList}
                 />
                 <GenerateFormBtns 
+                  cols={4}
                   btns={[{
-                    text: '确定',
+                    text: '筛选',
                     type: 'primary',
-                    onClick: () => {}
+                    onClick: this.fetchData.bind(this)
                   }, {
-                    text: '取消',
+                    text: '重置',
+                    onClick: this.resetFilter.bind(this)
                   }]}
                 />
               </Form>
@@ -113,6 +154,8 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
           )
         }
         <Table
+          className={`base-table ${className}`}
+          size="middle"
           rowKey={rowKeyFunc}
           dataSource={data}
           columns={columns}
@@ -123,7 +166,6 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
             pageSize: size,
             showTotal: total => `共 ${total} 条`,
             pageSizeOptions: ['10', '20', '40',],
-            showQuickJumper: true,
             size: 'small',
             showSizeChanger: true,
             onChange: this.changePage,
