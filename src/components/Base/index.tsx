@@ -3,7 +3,7 @@ import React from 'react';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { Get, Post, Put } from "@utils/api";
 
-export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
+class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
 
   $message = message;
 
@@ -33,3 +33,5 @@ export default class BaseComponent<P = {}, S = {}> extends React.Component<P, S>
     })
   }
 }
+
+export default BaseComponent;

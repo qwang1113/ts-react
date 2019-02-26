@@ -5,3 +5,10 @@ declare var process: {
     BASEURL: string
   }
 }
+
+// 数据基础格式
+declare interface IDataRow {
+  id?: number;
+  createdAt?: string;
+  updateAt?: string;
+}

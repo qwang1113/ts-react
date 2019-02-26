@@ -1,48 +1,41 @@
 .form-content{
-  .padLeft{
-    padding-left: 6em;
+  padding: 0 .4rem /* 40/100 */;
+  .ant-form-item-control-wrapper{
+    max-width: 250px;
   }
   .ant-calendar-picker{
     width: 100%;
   }
+
   &.col-1{
     .ant-form-item{
       width: 290px;
     }
   }
-  &.col-2{
+  &.col-2,
+  &.col-3,
+  &.col-4,
+  {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    .ant-form-item{
-      padding-right: 30px;
-      width: 40%;
-      display: flex;
-      align-items: flex-start;
+    &.col-2 .ant-form-item{
+      width: 50%;
       justify-content: flex-start;
       .ant-form-item-label{
-        width: 10em;
-        text-overflow: ellipsis;
-        padding-right: 5px;
-        .ant-form-item-required:before{
-          display: inline;
-        }
-      }
-      .ant-form-item-control-wrapper{
-        width: 50%;
+        width: 8em;
       }
     }
-  }
-  &.col-3{
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
+    &.col-3 .ant-form-item{
+      width: 33%;
+    }
+    &.col-4 .ant-form-item{
+      width: 25%;
+    }
     .ant-form-item{
-      padding-right: 30px;
-      width: 30%;
       display: flex;
       align-items: flex-start;
-      justify-content: flex-start;
+      justify-content: center;
       .ant-form-item-label{
         width: 6em;
         text-overflow: ellipsis;
@@ -52,9 +45,16 @@
         }
       }
       .ant-form-item-control-wrapper{
-        width: 80%;
+        flex: 1;
       }
     }
   }
+}
+
+.form-btns{
+  &.col-2{
+    padding-left: 8em;
+  }
+  padding-left: 6em;
 }
   

@@ -6,7 +6,7 @@ import './index.less';
 function Loading() {
   return (
     <div className="page-loading">
-      <Spin className="page-loading-spin" />
+      <Spin className="page-loading-spin" size="large"/>
     </div>
   );
 }

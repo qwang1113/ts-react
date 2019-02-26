@@ -4,7 +4,7 @@ import { Form, Button } from 'antd';
 import BaseComponent from '@components/Base';
 import { FormComponentProps } from 'antd/lib/form';
 
-import './index.less';
+import './Login.less';
 import { observer } from 'mobx-react';
 import { observable, action } from 'mobx';
 import GenerateForm from '@components/GenerateForm';

@@ -1,10 +1,10 @@
 import { lazy } from 'react';
 
-export const Login = lazy(() => import( /* webpackChunkName: "Login" */ '@pages/Login'));
+export const Login = lazy(() => import( /* webpackChunkName: "Login" */ '@pages/Login/Login'));
 export const PublicHome = lazy(() => import( /* webpackChunkName: "PublicHome" */ '@components/Home'));
 export const NotFound = lazy(() => import( /* webpackChunkName: "NotFound" */ '@components/NotFound'));
-export const UserManager = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/UserManager'))
-export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home'))
+export const Tables = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Tables/Tables'))
+export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
 
 export interface IMenu {
   title: string;
@@ -24,10 +24,10 @@ export const menu: IMenu[] = [
     component: Home
   },
   {
-    path: '/user-manager',
-    title: '用户管理',
+    path: '/tables',
+    title: '数据表管理',
     icon: 'user',
-    component: UserManager
+    component: Tables
   },
 ];
 

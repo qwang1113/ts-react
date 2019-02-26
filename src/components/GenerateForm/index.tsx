@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   Form,
+  Button
 } from 'antd';
 import { isEmpty } from 'lodash';
 
@@ -11,14 +12,18 @@ import CreateElement, {
   IFormItemProps
 } from './createElement';
 import './index.less';
+import { ButtonProps } from '_antd@3.10.8@antd/lib/button';
+
+interface IFormSubmitButton {
+  text: string;
+}
 
 interface IFormProps {
   className?: string; // 类名
   style?: object; // 样式
-  cols?: 1 | 2; // 表单元素分几列展示
+  cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
   items: IFormItemProps[];
-  onSubmit?: (values: any) => void;
-  btnText?: string;
+  btns?: (IFormSubmitButton & ButtonProps)[]
 }
 
 class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> {
@@ -96,47 +101,19 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
     };
   }
 
-  handleSubmit = (e) => {
-    const { onSubmit } = this.props;
-    e.preventDefault();
-    this.props.form.validateFields((err, values: { index?: any, key?: any }) => {
-      if (!err) {
-        console.log(values);
-        // format upload result;
-        const uploadComponents = this.props.items.filter(item => item.type === 'Upload');
-        if (uploadComponents) {
-          uploadComponents.forEach(cmp => {
-            try {
-              const val = values[cmp.dataKey];
-              if (val) {
-                if (Array.isArray(val)) {
-                  values[cmp.dataKey] = val[0] ? val[0].id : null;
-                } else {
-                  values[cmp.dataKey] = val.file.response.data;
-                }
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          });
-        }
-        onSubmit && onSubmit(values);
-      }
-    });
-  }
-
   render() {
     const {
       cols,
       items,
       form,
       className = '',
-      style = {}
+      style = {},
+      btns
     } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={`form-content col-${cols} ${className || ''}`} style={style}>
-        {items.map((item: IFormItemProps) => {
+        {items.map((item) => {
           return (
             <Form.Item
               key={item.dataKey}
@@ -150,6 +127,20 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
             </Form.Item>
           );
         })}
+        <Form.Item className={`form-btns col-${cols}`}>
+          {Array.isArray(btns) && btns.map((item, idx) => {
+            const { text, style, ...props } = item;
+            return (
+              <Button
+                key={item.title || idx}
+                {...props}
+                style={{ marginRight: 20, ...style }}
+              >
+                {text}
+              </Button>
+            );
+          })}
+        </Form.Item>
       </div>
     );
   }
