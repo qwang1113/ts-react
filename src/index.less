@@ -1,3 +1,5 @@
+@import './assets/less/base.less';
+
 html, body, #app, #app .appWrapper{
   min-height: 100vh;
 }
@@ -5,4 +7,24 @@ html, body, #app, #app .appWrapper{
 .app-container{
   background-color: #fff;
   padding: 0.15rem;
+}
+
+.app-title{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 0.2rem;
+  line-height: 0.2rem;
+  margin: 0.24rem 0;
+  font-size: 0.16rem;
+  color: @dark-color;
+  &:before{
+    content: '';
+    display: block;
+    width: 0.04rem;
+    height: 0.2rem;
+    background-color: @main-color;
+    border-radius: 0.02rem;
+    margin-right: 0.16rem;
+  }
 }

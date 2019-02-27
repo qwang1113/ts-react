@@ -60,10 +60,19 @@ export interface IFormItemProps extends IFormItemBase {
   validateOption?: GetFieldDecoratorOptions; // getFieldDecorator 第二个参数
 }
 
+const {
+  MonthPicker, 
+  RangePicker, 
+  WeekPicker,
+} = DatePicker;
+
 const Components: IComponents = {
   Input,
   Select,
   DatePicker,
+  MonthPicker, 
+  RangePicker, 
+  WeekPicker,
   Radio: Radio.Group,
   Checkbox: Checkbox.Group,
   Switch,

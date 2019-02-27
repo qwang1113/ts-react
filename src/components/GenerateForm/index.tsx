@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 
 import {
   FormComponentProps,
+  FormProps
 } from 'antd/lib/form/Form';
 import { ButtonProps } from 'antd/lib/button';
 import CreateElement, {
@@ -18,9 +19,7 @@ interface IFormSubmitButton {
   text: string;
 }
 
-interface IFormProps {
-  className?: string; // 类名
-  style?: React.StyleHTMLAttributes<any>; // 样式
+interface IFormProps extends FormProps{
   cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
   items: (IFormItemProps | JSX.Element)[];
   btnContainerClassName?: string
@@ -119,17 +118,22 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
 
   render() {
     const {
+      btns,
       cols,
       items,
-      className = '',
-      style = {},
-      btns,
+      className,
+      btnContainerStyle,
       btnContainerClassName,
-      btnContainerStyle
+      form, // 排除(antd报错)
+      getForm, // 排除(这个属性本身已经使用了, 不能透传到下面)
+      ...formProps
     } = this.props;
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <Form className={`form-content col-${cols} ${className || ''}`} style={style}>
+      <Form 
+        className={`form-content col-${cols} ${className}`} 
+        {...formProps}
+      >
         {
           items.map((item, idx) => {
             if (this.isFormItemProps(item)) {
@@ -146,10 +150,14 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
                 </Form.Item>
               )
             }
-            return (
+            return (item === null || item === undefined) ? (
               <div className="ant-form-item" key={idx} >
                 {item}
               </div>
+            ) : (
+              <React.Fragment key={idx}>
+                {item}
+              </React.Fragment>
             );
           })
         }
