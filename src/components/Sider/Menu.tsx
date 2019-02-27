@@ -11,9 +11,7 @@ const { SubMenu } = Menu;
 interface IStoreProps {
   sideBarTheme?: IGlobalStore.SideBarTheme;
   navOpenKeys?: string[];
-  selectedKey?: string;
   setOpenKeys?: (openKeys: string[]) => void;
-  setSelectedKey?: (selectedKey: string) => void;
   routerStore?: RouterStore;
   sideBarCollapsed?: boolean;
 }
@@ -25,8 +23,6 @@ interface IStoreProps {
       sideBarTheme,
       navOpenKeys,
       setOpenKeys,
-      selectedKey,
-      setSelectedKey,
       sideBarCollapsed
     } = globalStore;
     return {
@@ -34,8 +30,6 @@ interface IStoreProps {
       sideBarTheme,
       navOpenKeys,
       setOpenKeys,
-      selectedKey,
-      setSelectedKey,
       sideBarCollapsed
     };
   }
@@ -44,7 +38,7 @@ interface IStoreProps {
 class SiderMenu extends React.Component<IStoreProps> {
 
   @computed
-  get currentRoute() {
+  get selectedKeys() {
     return this.props.routerStore.location.pathname;
   }
 
@@ -86,8 +80,6 @@ class SiderMenu extends React.Component<IStoreProps> {
    */
   selectMenu = ({ key }: { key: string }) => {
     const { history } = this.props.routerStore;
-    const { setSelectedKey } = this.props;
-    setSelectedKey(key);
     history.push(key);
   }
 
@@ -105,8 +97,7 @@ class SiderMenu extends React.Component<IStoreProps> {
     const {
       sideBarTheme,
       navOpenKeys,
-      selectedKey,
-      sideBarCollapsed
+      sideBarCollapsed,
     } = this.props;
     return (
       <Menu
@@ -114,7 +105,7 @@ class SiderMenu extends React.Component<IStoreProps> {
         theme={sideBarTheme}
         mode="inline"
         openKeys={navOpenKeys}
-        selectedKeys={[selectedKey]}
+        selectedKeys={[this.selectedKeys]}
         onSelect={this.selectMenu}
         onOpenChange={this.openMenu}
         inlineCollapsed={sideBarCollapsed}

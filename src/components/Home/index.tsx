@@ -3,14 +3,13 @@ import {
   Switch,
   Redirect,
   Link,
-  withRouter,
-  RouteComponentProps,
   HashRouter as Router,
 } from 'react-router-dom';
 import * as React from 'react';
-// import { hot } from 'react-hot-loader';
-import { Layout, Breadcrumb } from 'antd';
+import { computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
+import { hot } from 'react-hot-loader';
+import { Layout, Breadcrumb } from 'antd';
 
 import Sider from '@components/Sider';
 import NotFound from '@components/NotFound';
@@ -19,49 +18,45 @@ import { getRoutesByPath, getStorage } from '@utils/index';
 
 import menu, { IMenu } from '../../utils/menu';
 import './index.less';
+import BaseComponent from '@components/Base';
 
-interface Props {
-  selectedKey?: string;
-  setSelectedKey?: (selectedKey: string) => void;
+interface IStoreProps {
+  routerStore?: RouterStore;
 }
 
-// @hot(module)
+@hot(module)
 @inject(
-  (store: IStore): Props => {
-    const { globalStore: { setSelectedKey, selectedKey } } = store;
+  (store: IStore): IStoreProps => {
+    const { routerStore } = store;
     return {
-      selectedKey,
-      setSelectedKey
+      routerStore,
     };
   }
 )
 @observer
-class Home extends React.Component<RouteComponentProps & Props, {}> {
+class Home extends BaseComponent<IStoreProps, {}> {
 
-  constructor(props){
+  state = {}
+
+  @computed
+  get selectedKeys() {
+    return this.props.routerStore.location.pathname;
+  }
+
+  constructor(props) {
     super(props);
-    if(!getStorage('token')){
+    if (!getStorage('token')) {
       location.href = '/#/login';
     }
   }
 
-  state = {};
-
-  componentDidMount(){
-    console.log(333);
-  }
-
-  /**
-   * 监听路由变化, 将更新映射到globalStore的selectedKey中
-   *
-   * @static
-   * @param {(RouteComponentProps<any> & Props)} props
-   * @returns
-   * @memberof Home
-   */
-  static getDerivedStateFromProps(props: RouteComponentProps & Props) {
-    const { location: { pathname }, setSelectedKey } = props;
-    setSelectedKey(pathname);
+  static getDerivedStateFromProps(props) {
+    const pathname = props.routerStore.location.pathname;
+    const routes = getRoutesByPath(pathname, menu);
+    if (!routes || routes.length === 0) {
+      return;
+    }
+    document.title = routes.pop().title;
     return null;
   }
 
@@ -70,8 +65,7 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
    * @memberof Home
    */
   createBreadCrumb = () => {
-    const { selectedKey: pathname } = this.props;
-    return getRoutesByPath(pathname, menu).map(route => {
+    return getRoutesByPath(this.selectedKeys, menu).map(route => {
       return (
         <Breadcrumb.Item key={route.title}>
           {route.title}
@@ -134,4 +128,4 @@ class Home extends React.Component<RouteComponentProps & Props, {}> {
   }
 }
 
-export default withRouter(Home);
+export default Home;

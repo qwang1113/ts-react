@@ -5,7 +5,6 @@ enum LOCALSTORAGE_KEYS {
   NAV_OPEN_KEYS = 'navOpenKeys',
   SIDE_BAR_THEME = 'sideBarTheme',
   SIDE_BAR_COLLAPSED = 'sideBarCollapsed',
-  NAV_SELECTED_KEYS = 'navSelectedKeys'
 }
 
 export class GlobalStore {
@@ -38,15 +37,6 @@ export class GlobalStore {
   navOpenKeys: string[] = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEYS.NAV_OPEN_KEYS)) || [];
 
   /**
-   * 打开的菜单key
-   *
-   * @type {string}
-   * @memberof GlobalStore
-   */
-  @observable
-  selectedKey: string = localStorage.getItem(LOCALSTORAGE_KEYS.NAV_SELECTED_KEYS) || '';
-
-  /**
    * 折叠菜单
    * @memberof GlobalStore
    */
@@ -65,17 +55,6 @@ export class GlobalStore {
   setOpenKeys = (openKeys: string[]) => {
     this.navOpenKeys = openKeys;
     localStorage.setItem(LOCALSTORAGE_KEYS.NAV_OPEN_KEYS, JSON.stringify(openKeys));
-  }
-
-  /**
-   * 打开关闭menu
-   * @param openKeys string[] 打开的项目keys
-   * @memberof GlobalStore
-   */
-  @action
-  setSelectedKey = (selectedKey: string) => {
-    this.selectedKey = selectedKey;
-    localStorage.setItem(LOCALSTORAGE_KEYS.NAV_SELECTED_KEYS, selectedKey);
   }
 }
 

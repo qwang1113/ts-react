@@ -8,11 +8,6 @@ import GenerateFormBtns from '@components/GenerateForm/CreateFormBtns';
 class Home extends BaseComponent<FormComponentProps, {}>{
   handleSubmit = async () => {
     const values = await this.$getFormValue(this.props.form);
-    console.log(values);
-  }
-
-  componentDidMount(){
-    console.log(222);
   }
 
   render() {

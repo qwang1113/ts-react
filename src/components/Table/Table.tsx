@@ -35,7 +35,6 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   }
 
   componentDidMount() {
-    console.log(111);
     const {url, dataSource} = this.props;
     // 获取缓存的size
     const size = localStorage.getItem('tableSize') || 10;
