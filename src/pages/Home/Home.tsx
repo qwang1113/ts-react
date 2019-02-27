@@ -33,13 +33,13 @@ class Home extends BaseComponent<{}, {}>{
               label: '普通输入框',
               dataKey: 'Input',
               type: 'Input',
-              placeholder: '请输入...',
+              placeholder: '请输入',
               required: true
             }, {
               label: '普通输入框(禁用)',
               dataKey: 'disableInput',
               type: 'Input',
-              placeholder: '请输入...',
+              placeholder: '请输入',
               componentProps: {
                 disabled: true
               }
@@ -59,13 +59,13 @@ class Home extends BaseComponent<{}, {}>{
               label: '日期选择',
               dataKey: 'DatePicker',
               type: 'DatePicker',
-              placeholder: '请选择...'
+              placeholder: '请选择'
             },
             {
               label: '时间日期选择',
               dataKey: 'datetimePicker',
               type: 'DatePicker',
-              placeholder: '请选择...',
+              placeholder: '请选择',
               componentProps: {
                 showTime: true,
                 format: "YYYY-MM-DD HH:mm:ss"
@@ -75,7 +75,7 @@ class Home extends BaseComponent<{}, {}>{
               label: '时间段',
               dataKey: 'rangePicker',
               type: 'RangePicker',
-              placeholder: ['请选择开始日期...', '请选择结束日期...'],
+              placeholder: ['请选择开始日期', '请选择结束日期'],
             },
             <Title text="文件上传"/>,
             {
