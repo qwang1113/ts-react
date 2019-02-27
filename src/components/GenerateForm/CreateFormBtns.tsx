@@ -13,42 +13,36 @@ interface IFormSubmitButton {
 interface IFormProps {
   className?: string; // 类名
   style?: object; // 样式
-  cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
   btns?: (IFormSubmitButton & ButtonProps)[]
 }
 
 class GenerateFormBtns extends React.Component<IFormProps, {}> {
 
-  static defaultProps: Partial<IFormProps> = {
-    cols: 2
-  };
-
   render() {
     const {
       className,
       style,
-      cols,
       btns
     } = this.props;
     return (
-      <div className={`form-content form-btns col-${cols} ${className || ''}`} style={style}>
-        <Form.Item
-          label="操作按钮"
-        >
-          {Array.isArray(btns) && btns.map((item, idx) => {
-            const { text, style, ...props } = item;
-            return (
-              <Button
-                key={item.title || idx}
-                {...props}
-                style={{ marginRight: 20, ...style }}
-              >
-                {text}
-              </Button>
-            );
-          })}
-        </Form.Item>
-      </div>
+      <Form.Item
+        label="操作按钮"
+        className={`form-btns ${className || ''}`}
+        style={style}
+      >
+        {Array.isArray(btns) && btns.map((item, idx) => {
+          const { text, style, ...props } = item;
+          return (
+            <Button
+              key={item.title || idx}
+              {...props}
+              style={{ marginRight: 20, ...style }}
+            >
+              {text}
+            </Button>
+          );
+        })}
+      </Form.Item>
     );
   }
 }

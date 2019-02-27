@@ -1,21 +1,22 @@
-import { Form } from 'antd';
 import * as React from 'react';
-import { FormComponentProps } from 'antd/lib/form';
 import BaseComponent from '@components/Base';
 import GenerateForm from '@components/GenerateForm';
-import GenerateFormBtns from '@components/GenerateForm/CreateFormBtns';
 
-class Home extends BaseComponent<FormComponentProps, {}>{
-  handleSubmit = async () => {
-    const values = await this.$getFormValue(this.props.form);
-  }
+class Home extends BaseComponent<{}, {}>{
 
   render() {
-    const { form } = this.props;
     return (
-      <Form className="app-container">
+      <div>
         <GenerateForm
-          form={form}
+          cols={2}
+          className="app-container"
+          btns={[{
+            text: '确定',
+            type: 'primary',
+            onClick: () => { }
+          }, {
+            text: '取消',
+          }]}
           items={[{
             label: '普通输入框',
             dataKey: 'Input',
@@ -42,10 +43,8 @@ class Home extends BaseComponent<FormComponentProps, {}>{
             dataKey: 'DatePicker',
             type: 'DatePicker',
             placeholder: '请选择...'
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '单文件上传',
             dataKey: 'Upload',
             type: 'Upload',
@@ -54,17 +53,13 @@ class Home extends BaseComponent<FormComponentProps, {}>{
             dataKey: 'MultiUpload',
             type: 'Upload',
             max: 3
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '开关',
             dataKey: 'Switch',
             type: 'Switch',
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '单选',
             dataKey: 'Radio',
             type: 'Radio',
@@ -75,10 +70,8 @@ class Home extends BaseComponent<FormComponentProps, {}>{
               label: '梨',
               value: 1
             }]
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '多选',
             dataKey: 'CheckBox',
             type: 'Checkbox',
@@ -89,37 +82,25 @@ class Home extends BaseComponent<FormComponentProps, {}>{
               label: '梨',
               value: 1
             }]
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '评分',
             dataKey: 'Rate',
             type: 'Rate',
-          }]} />
-        <GenerateForm
-          form={form}
-          items={[{
+          },
+          {
             label: '文本域',
             dataKey: 'TextArea',
             type: 'TextArea',
             required: true,
             initialValue: '我是文本域'
-          }]}
+          }, null,
+          ]}
         />
-        <GenerateFormBtns
-          btns={[{
-            text: '确定',
-            type: 'primary',
-            onClick: () => { }
-          }, {
-            text: '取消',
-          }]}
-        />
-      </Form>
+      </div>
     );
   }
 }
 
 
-export default Form.create()(Home);
+export default Home;

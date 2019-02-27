@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {
   Form,
-  Button
 } from 'antd';
 import { isEmpty } from 'lodash';
 
 import {
   FormComponentProps,
 } from 'antd/lib/form/Form';
+import { ButtonProps } from 'antd/lib/button';
 import CreateElement, {
   IFormItemProps
 } from './createElement';
 import './index.less';
-import { ButtonProps } from 'antd/lib/button';
+import GenerateFormBtns from './CreateFormBtns';
 
 interface IFormSubmitButton {
   text: string;
@@ -20,13 +20,22 @@ interface IFormSubmitButton {
 
 interface IFormProps {
   className?: string; // 类名
-  style?: object; // 样式
+  style?: React.StyleHTMLAttributes<any>; // 样式
   cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
-  items: IFormItemProps[];
+  items: (IFormItemProps | JSX.Element)[];
+  btnContainerClassName?: string
+  btnContainerStyle?: React.StyleHTMLAttributes<any>
   btns?: (IFormSubmitButton & ButtonProps)[]
+  getForm?: (form: any) => any
 }
 
 class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> {
+
+  constructor(props) {
+    super(props);
+    const { getForm } = props;
+    getForm && getForm(props.form);
+  }
 
   static defaultProps: Partial<IFormProps & FormComponentProps> = {
     cols: 2
@@ -101,49 +110,61 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
     };
   }
 
+  /**
+   * 判断数据类型, 是否是FormItemProps
+   */
+  isFormItemProps = (item: any): item is IFormItemProps => {
+    return item && typeof (item as IFormItemProps)['dataKey'] !== 'undefined'
+  }
+
   render() {
     const {
       cols,
       items,
-      form,
       className = '',
       style = {},
-      btns
+      btns,
+      btnContainerClassName,
+      btnContainerStyle
     } = this.props;
-    const { getFieldDecorator } = form;
+    const { form: { getFieldDecorator } } = this.props;
     return (
-      <div className={`form-content col-${cols} ${className || ''}`} style={style}>
-        {items.map((item) => {
-          return (
-            <Form.Item
-              key={item.dataKey}
-              {...this.generateItemOptions(item)}
-            >
-              {
-                getFieldDecorator(item.dataKey, this.generateFieldDecorator(item))(
-                  <CreateElement {...item} />
-                )
-              }
-            </Form.Item>
-          );
-        })}
-        <Form.Item className={`form-btns col-${cols}`}>
-          {Array.isArray(btns) && btns.map((item, idx) => {
-            const { text, style, ...props } = item;
+      <Form className={`form-content col-${cols} ${className || ''}`} style={style}>
+        {
+          items.map((item, idx) => {
+            if (this.isFormItemProps(item)) {
+              return (
+                <Form.Item
+                  key={item.dataKey}
+                  {...this.generateItemOptions(item)}
+                >
+                  {
+                    getFieldDecorator(item.dataKey, this.generateFieldDecorator(item))(
+                      <CreateElement {...item} />
+                    )
+                  }
+                </Form.Item>
+              )
+            }
             return (
-              <Button
-                key={item.title || idx}
-                {...props}
-                style={{ marginRight: 20, ...style }}
-              >
-                {text}
-              </Button>
+              <div className="ant-form-item" key={idx} >
+                {item}
+              </div>
             );
-          })}
-        </Form.Item>
-      </div>
+          })
+        }
+        {
+          btns && btns.length && (
+            <GenerateFormBtns
+              btns={btns}
+              className={btnContainerClassName}
+              style={btnContainerStyle}
+            />
+          )
+        }
+      </Form>
     );
   }
 }
 
-export default GenerateForm;
+export default Form.create()(GenerateForm);

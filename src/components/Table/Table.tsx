@@ -2,12 +2,10 @@ import * as React from 'react';
 import BaseComponent from '@components/Base';
 
 import "./Table.less";
-import { Table, Form } from 'antd';
-import { FormComponentProps } from 'antd/lib/form';
+import { Table } from 'antd';
 import { TableProps } from 'antd/lib/table';
 import GenerateForm from '@components/GenerateForm';
 import { IFormItemProps } from '@components/GenerateForm/createElement';
-import GenerateFormBtns from '@components/GenerateForm/CreateFormBtns';
 
 interface IState {
   size: number;
@@ -24,7 +22,7 @@ interface IProps extends TableProps<{}> {
   params?: object;
 }
 
-class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
+class BaseTable extends BaseComponent<IProps, IState>{
 
   state = {
     size: 10,
@@ -34,14 +32,16 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
     data: []
   }
 
+  form = null;
+
   componentDidMount() {
-    const {url, dataSource} = this.props;
+    const { url, dataSource } = this.props;
     // 获取缓存的size
     const size = localStorage.getItem('tableSize') || 10;
-    this.setState({size: +size})
-    if(Array.isArray(dataSource)){
-      this.setState({data: dataSource});
-    } else if(url){
+    this.setState({ size: +size })
+    if (Array.isArray(dataSource)) {
+      this.setState({ data: dataSource });
+    } else if (url) {
       this.fetchData();
     } else {
       console.error('the url prop or dataSource must has one');
@@ -72,8 +72,8 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   /**
    * 重置搜索条件并重置页面
   */
- resetFilter = () => {
-    this.props.form.resetFields();
+  resetFilter = () => {
+    this.form.resetFields();
     this.setState({
       size: 10,
       page: 0,
@@ -81,21 +81,21 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
   };
 
   async fetchData() {
-    const {size, page} = this.state;
-    const {url, params} = this.props;
+    const { size, page } = this.state;
+    const { url, params } = this.props;
     this.setState({
       loading: true
     });
-    const filterValues = await this.$getFormValue(this.props.form);
+    const filterValues = await this.$getFormValue(this.form);
     const res = await this.$Get(url, {
       ...params,
       ...filterValues,
       size,
       page
     });
-    if(res){
-      const {content, total} = res;
-      this.setState(({page}) => {
+    if (res) {
+      const { content, total } = res;
+      this.setState(({ page }) => {
         return {
           page: total === content.length ? page : page + 1,
           total: total,
@@ -115,7 +115,6 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
       loading,
     } = this.state;
     const {
-      form,
       rowKey,
       columns,
       showFilter,
@@ -127,28 +126,24 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
       ? rowKey
       : (record: IDataRow) => `${record.id}`;
     return (
-      <div className="app-table" style={{backgroundColor: '#fff'}}>
+      <div className="app-table" style={{ backgroundColor: '#fff' }}>
         {
           showFilter && (
             <div className="app-table-search-bar">
-              <Form>
-                <GenerateForm
-                  cols={4}
-                  form={form}
-                  items={filterList}
-                />
-                <GenerateFormBtns 
-                  cols={4}
-                  btns={[{
-                    text: '筛选',
-                    type: 'primary',
-                    onClick: this.fetchData.bind(this)
-                  }, {
-                    text: '重置',
-                    onClick: this.resetFilter.bind(this)
-                  }]}
-                />
-              </Form>
+              <GenerateForm
+                cols={4}
+                items={filterList}
+                className="search-bar-form"
+                btns={[{
+                  text: '筛选',
+                  type: 'primary',
+                  onClick: this.fetchData.bind(this)
+                }, {
+                  text: '重置',
+                  onClick: this.resetFilter.bind(this)
+                }]}
+                getForm={form => this.form = form}
+              />
             </div>
           )
         }
@@ -178,4 +173,4 @@ class BaseTable extends BaseComponent<IProps & FormComponentProps, IState>{
 }
 
 
-export default Form.create()(BaseTable);
+export default BaseTable;

@@ -27,10 +27,7 @@ interface IStoreProps {
 @hot(module)
 @inject(
   (store: IStore): IStoreProps => {
-    const { routerStore } = store;
-    return {
-      routerStore,
-    };
+    return store;
   }
 )
 @observer
@@ -50,13 +47,15 @@ class Home extends BaseComponent<IStoreProps, {}> {
     }
   }
 
+  /**
+   * 路由变化自动设置页面标题
+   */
   static getDerivedStateFromProps(props) {
     const pathname = props.routerStore.location.pathname;
     const routes = getRoutesByPath(pathname, menu);
-    if (!routes || routes.length === 0) {
-      return;
+    if (routes && routes.length > 0) {
+      document.title = routes.pop().title;
     }
-    document.title = routes.pop().title;
     return null;
   }
 
