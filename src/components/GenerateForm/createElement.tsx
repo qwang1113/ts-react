@@ -8,6 +8,7 @@ import {
   Checkbox,
   Switch,
   Rate,
+  Spin,
 } from 'antd';
 
 import Upload from '@components/Upload';
@@ -58,26 +59,29 @@ export interface IFormItemProps extends IFormItemBase {
   labelOptions?: FormItemProps; // formItem的props
   options?: string | ISelectOption[]; // select, radioGroup, Checkbox 的options list
   validateOption?: GetFieldDecoratorOptions; // getFieldDecorator 第二个参数
+  params?: object;
+  labelKey?: string
+  valueKey?: string
 }
 
 const {
-  MonthPicker, 
-  RangePicker, 
+  MonthPicker,
+  RangePicker,
   WeekPicker,
 } = DatePicker;
 
 const Components: IComponents = {
+  Rate,
   Input,
   Select,
-  DatePicker,
-  MonthPicker, 
-  RangePicker, 
-  WeekPicker,
-  Radio: Radio.Group,
-  Checkbox: Checkbox.Group,
   Switch,
   Upload,
-  Rate,
+  WeekPicker,
+  DatePicker,
+  MonthPicker,
+  RangePicker,
+  Radio: Radio.Group,
+  Checkbox: Checkbox.Group,
   TextArea: Input.TextArea,
   Custom: null,
 };
@@ -87,10 +91,14 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
 
   @observable options = [];
 
+  @observable loading = true;
+
   componentDidMount() {
     const { options } = this.props;
     if ('string' === typeof options) {
       this.doFetch(options);
+    } else {
+      this.hideLoading();
     }
   }
 
@@ -99,10 +107,26 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
     this.options = value;
   }
 
+  @action
+  hideLoading = () => {
+    this.loading = false;
+  }
+
   async doFetch(options: string) {
-    const res: { ecode: number, data: ISelectOption[] } = await Get(options);
-    if (res && res.ecode === 0) {
-      this.updateOption(res.data || []);
+    const {
+      params,
+      labelKey = 'name',
+      valueKey = 'id'
+    } = this.props;
+    const res: ISelectOption[] = await Get(options, params);
+    this.hideLoading();
+    if (Array.isArray(res)) {
+      this.updateOption(res.map(d => {
+        return {
+          label: d[labelKey],
+          value: d[valueKey]
+        }
+      }));
     }
   }
 
@@ -131,24 +155,24 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
 
   render() {
     const {
+      max,
       type,
-      options,
-      componentProps,
       value,
-      onChange,
+      options,
       checked,
-      placeholder,
+      onChange,
       fileList,
-      max
+      placeholder,
+      componentProps,
     } = this.props;
     const ele = Components[type];
-    const props = Object.assign({
-      placeholder: placeholder || this.generatePlaceholder(),
+    let props: { [propName: string]: any } = {
       value,
       onChange,
       checked,
-    }, componentProps);
-    let children;
+      placeholder: placeholder || this.generatePlaceholder(),
+    };
+    let children = null;
     switch (type) {
       case 'Rate':
         props.allowHalf = true;
@@ -159,7 +183,16 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
         break;
       case 'Select':
         {
-          props.allowClear = true;
+          Object.assign(props, {
+            allowClear: true,
+            showSearch: true,
+            optionFilterProp: "children",
+            filterOption: (input, option) => {
+              return option.props.children.toLowerCase().indexOf(
+                input.toLowerCase()
+              ) >= 0;
+            }
+          });
           const labelOptions = this.getOptionList(type, options);
           children = labelOptions.map((opt: ISelectOption) => {
             return (
@@ -177,10 +210,14 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
       case 'Upload':
         {
           Object.assign(props, {
-            action: baseUrl + '/public/upload',
+            max,
             listType: 'picture-card',
-            fileList: Array.isArray(fileList) ? fileList : fileList ? fileList.fileList : [],
-            max
+            action: baseUrl + '/public/upload',
+            fileList: Array.isArray(fileList)
+              ? fileList
+              : fileList
+                ? fileList.fileList
+                : [],
           });
         }
         break;
@@ -189,6 +226,15 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
         break;
       default:
         break;
+    }
+
+    // 合并默认属性与自定义属性
+    Object.assign(props, componentProps);
+    // 如果loading正在加载
+    if(this.loading){
+      return (
+        <Spin size="small" />
+      )
     }
     return React.createElement(ele, props, children);
   }

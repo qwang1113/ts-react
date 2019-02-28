@@ -28,7 +28,7 @@ class Home extends BaseComponent<{}, {}>{
             text: '取消',
           }]}
           items={[
-            <Title text="普通表单"/>
+            <Title text="普通表单" />
             , {
               label: '普通输入框',
               dataKey: 'Input',
@@ -43,18 +43,18 @@ class Home extends BaseComponent<{}, {}>{
               componentProps: {
                 disabled: true
               }
-            }, 
-            <Title text="下拉"/>,
+            },
+            <Title text="下拉" />,
             {
               label: '选择框',
               dataKey: 'Select',
               type: 'Select',
-              options: [{
-                label: '测试1',
-                value: 0
-              }]
-            }, 
-            <Title text="日期选择"/>,
+              options: '/examples',
+              labelKey: 'name',
+              valueKey: 'id',
+              params: { test: null }
+            },
+            <Title text="日期选择" />,
             {
               label: '日期选择',
               dataKey: 'DatePicker',
@@ -77,7 +77,7 @@ class Home extends BaseComponent<{}, {}>{
               type: 'RangePicker',
               placeholder: ['请选择开始日期', '请选择结束日期'],
             },
-            <Title text="文件上传"/>,
+            <Title text="文件上传" />,
             {
               label: '单文件上传',
               dataKey: 'Upload',
@@ -88,7 +88,7 @@ class Home extends BaseComponent<{}, {}>{
               type: 'Upload',
               max: 3
             },
-            <Title text="开关, 单选, 复选"/>,
+            <Title text="开关, 单选, 复选" />,
             {
               label: '开关',
               dataKey: 'Switch',
@@ -98,33 +98,25 @@ class Home extends BaseComponent<{}, {}>{
               label: '单选',
               dataKey: 'Radio',
               type: 'Radio',
-              options: [{
-                label: '苹果',
-                value: 0
-              }, {
-                label: '梨',
-                value: 1
-              }]
+              options: '/examples',
+              labelKey: 'name',
+              valueKey: 'id'
             },
             {
               label: '多选',
               dataKey: 'CheckBox',
               type: 'Checkbox',
-              options: [{
-                label: '苹果',
-                value: 0
-              }, {
-                label: '梨',
-                value: 1
-              }]
+              options: '/examples',
+              labelKey: 'name',
+              valueKey: 'id'
             },
-            <Title text="评分"/>,
+            <Title text="评分" />,
             {
               label: '评分',
               dataKey: 'Rate',
               type: 'Rate',
             },
-            <Title text="文本域"/>,
+            <Title text="文本域" />,
             {
               label: '文本域',
               dataKey: 'TextArea',

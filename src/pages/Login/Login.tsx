@@ -1,23 +1,26 @@
 import md5 from 'md5';
 import React from 'react';
-import { Form, Button } from 'antd';
+import { Button } from 'antd';
+import Cookie from 'js-cookie';
 import BaseComponent from '@components/Base';
-import { FormComponentProps } from 'antd/lib/form';
 
 import './Login.less';
 import { observer } from 'mobx-react';
 import { observable, action } from 'mobx';
 import GenerateForm from '@components/GenerateForm';
+import { setSessionStorage } from '@utils/util';
 
 @observer
-class Login extends BaseComponent<FormComponentProps, {}>{
+class Login extends BaseComponent<{}, {}>{
   @observable loading = false;
+
+  form = null;
 
   @action
   setLoading = loading => this.loading = loading;
 
   submit = async () => {
-    const params = await this.$getFormValue(this.props.form);
+    const params = await this.$getFormValue(this.form);
     this.setLoading(true);
     const res = await this.$Post('/user/login', {
       ...params,
@@ -25,15 +28,15 @@ class Login extends BaseComponent<FormComponentProps, {}>{
     });
     this.setLoading(false);
     if (!res) {
-      this.props.form.resetFields();
+      this.form.resetFields();
       return;
     }
-    sessionStorage.setItem('token', res.token);
+    setSessionStorage('token', res.token);
+    Cookie.set('token', res.token);
     location.href = '/#/home';
   }
 
   render() {
-    const { form } = this.props;
     return (
       <div className="login-container">
         <div className="content">
@@ -41,15 +44,13 @@ class Login extends BaseComponent<FormComponentProps, {}>{
             <div className="main-text">React基础框架</div>
             <div className="sub-text">基于TypeScript + React + Antd + Mobx等技术栈</div>
           </div>
-          <Form
-            className="input-area"
-            onKeyPress={(e) => {
-              e.nativeEvent.keyCode === 13 && this.submit();
-            }}
-          >
+          <div className="login-form">
             <GenerateForm
-              form={form}
-              className="login-form"
+              className="input-area"
+              onKeyPress={(e) => {
+                e.nativeEvent.keyCode === 13 && this.submit();
+              }}
+              getForm={form => this.form = form}
               cols={1}
               items={[{
                 dataKey: 'name',
@@ -80,11 +81,11 @@ class Login extends BaseComponent<FormComponentProps, {}>{
             >
               登录
             </Button>
-          </Form>
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default Form.create()(Login);
+export default Login;

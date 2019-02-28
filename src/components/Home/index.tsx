@@ -14,7 +14,7 @@ import { Layout, Breadcrumb } from 'antd';
 import Sider from '@components/Sider';
 import NotFound from '@components/NotFound';
 import Header from '@components/Header';
-import { getRoutesByPath, getStorage } from '@utils/index';
+import { getRoutesByPath, getSessionStorage } from '@utils/util';
 
 import menu, { IMenu } from '../../utils/menu';
 import './index.less';
@@ -42,7 +42,7 @@ class Home extends BaseComponent<IStoreProps, {}> {
 
   constructor(props) {
     super(props);
-    if (!getStorage('token')) {
+    if (!getSessionStorage('token')) {
       location.href = '/#/login';
     }
   }
@@ -106,7 +106,7 @@ class Home extends BaseComponent<IStoreProps, {}> {
         <Sider />
         <Layout>
           <Header />
-          <Layout.Content className="content">
+          <Layout.Content className="app-content">
             <Breadcrumb style={{ display: 'block' }}>
               <Breadcrumb.Item>
                 <Link to={home}>主页</Link>

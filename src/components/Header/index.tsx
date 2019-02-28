@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 
 import './index.less';
 import BaseComponent from '@components/Base';
+import { removeSessionStorage } from '@utils/util';
 
 
 interface IStoreProps {
@@ -29,7 +30,7 @@ class Header extends BaseComponent<IStoreProps, {}>{
    */
   logout = () => {
     Cookie.remove('token');
-    sessionStorage.removeItem('token');
+    removeSessionStorage('token');
     this.props.routerStore.push('/login');
   }
 

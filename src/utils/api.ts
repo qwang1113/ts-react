@@ -1,12 +1,13 @@
+import * as Cookie from 'js-cookie';
 import * as qs from 'querystring';
 import { message } from 'antd';
-import { getStorage } from '@utils/index';
+import { getSessionStorage, removeSessionStorage } from '@utils/util';
 
 export const baseUrl = '/api';
 
 const headers = {
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${getStorage('token')}`
+  'Authorization': `Bearer ${getSessionStorage('token')}`
 };
 
 const generate = async response => {
@@ -23,8 +24,8 @@ const generate = async response => {
     case 200:
       return result || {};
     case 403:
-      document.cookie = '';
-      sessionStorage.clear();
+      Cookie.remove('token');
+      removeSessionStorage('token');
       location.href = '/#/login';
     default:
       message.destroy();
@@ -35,7 +36,7 @@ const generate = async response => {
 
 export const Get = async (url: string, data = {}): Promise<any> => {
   const [actionUrl, params] = url.split('?');
-  if(params){
+  if (params) {
     Object.assign(data, qs.parse(params));
   }
   return generate(fetch(baseUrl + actionUrl + '?' + qs.stringify(data), {

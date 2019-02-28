@@ -1,63 +1,91 @@
-.form-content{
-  padding: 0 .4rem /* 40/100 */;
-  .ant-form-item-control-wrapper{
+.form-content {
+  padding: 0 .4rem
+    /* 40/100 */
+  ;
+
+  .ant-form-item-control-wrapper {
+    // 默认表单元素最大宽度
     max-width: 250px;
   }
-  .form-btns .ant-form-item-control-wrapper{
-    max-width: none;
-  }
-  .ant-calendar-picker{
+
+  .ant-calendar-picker {
+    // fixed 日期选择框宽度固定
     width: 100% !important;
   }
 
-  &.col-1{
-    .ant-form-item{
+  &.col-1 {
+    .ant-form-item {
       width: 290px;
     }
   }
+
   &.col-2,
   &.col-3,
-  &.col-4{
+  &.col-4 {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    &.col-2 .ant-form-item{
+
+    &.col-2 .ant-form-item {
       width: 50%;
       justify-content: flex-start;
-      .ant-form-item-label{
+
+      .ant-form-item-label {
         width: 8em;
       }
     }
-    &.col-3 .ant-form-item{
+
+    &.col-3 .ant-form-item {
       width: 33%;
     }
-    &.col-4 .ant-form-item{
+
+    &.col-4 .ant-form-item {
       width: 25%;
     }
-    .ant-form-item{
+
+    .ant-form-item {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      .ant-form-item-label{
+
+      .ant-form-item-label {
         width: 6em;
+        // 表单label超过显示省略号
         text-overflow: ellipsis;
         padding-right: 5px;
-        .ant-form-item-required:before{
+
+        .ant-form-item-required:before {
           display: inline;
         }
       }
-      .ant-form-item-control-wrapper{
+
+      .ant-form-item-control-wrapper {
         flex: 1;
+
+        .ant-checkbox-group {
+          // fixed checkbox 显示错位, 且上下排列没有间隙
+          padding-top: .1rem;
+
+          .ant-checkbox-group-item {
+            margin-bottom: .2rem;
+          }
+        }
       }
     }
   }
 }
 
-.form-btns{
-  .ant-form-item-label{
+.form-btns {
+
+  // 表单按钮
+  .ant-form-item-label {
     visibility: hidden;
     opacity: 0;
     line-height: 0;
   }
+
+  .ant-form-item-control-wrapper {
+    // 禁用按钮栏表单最大宽度
+    max-width: none;
+  }
 }
-  
