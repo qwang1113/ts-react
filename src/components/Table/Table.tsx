@@ -21,11 +21,12 @@ interface IProps extends TableProps<{}> {
   showFilter?: boolean; // 是否展示筛选栏
   showIndex?: boolean; // 是否显示索引列
   showSelect?: boolean; // 行是否可选
+  deleteUrl?: string; // 删除链接
   filterList?: IFormItemProps[];
   url?: string;
   params?: object;
   onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
-  selectActionBtns: IFormBtnProps[]
+  selectActionBtns: IFormBtnProps["btns"]
 }
 
 class BaseTable extends BaseComponent<IProps, IState>{
@@ -151,24 +152,53 @@ class BaseTable extends BaseComponent<IProps, IState>{
     this.setState({ selectedRowKeys });
   }
 
+  /**
+   * 多选删除按钮
+   * @param selectedRowKeys Array<number> 待删除项目id
+   */
+  handleDeleteRows = async () => {
+    const {selectedRowKeys} = this.state;
+    const {deleteUrl} = this.props;
+    const res = await this.$Get(deleteUrl, {
+      idList: selectedRowKeys
+    });
+    console.log(res);
+  }
+
+  /**
+   * 生成选择之后的自定义按钮, 可根据传入的deleteUrl生成默认的删除按钮以及方法
+   */
   generateSelectActionBtns() {
     const { selectedRowKeys } = this.state;
-    const { showSelect, selectActionBtns } = this.props;
+    const { showSelect, selectActionBtns, deleteUrl } = this.props;
     const hasSelected = selectedRowKeys.length > 0;
-    if (!showSelect) {
+    if (!showSelect && !deleteUrl) {
       return null;
     }
+    let actionBtns = selectActionBtns.map(btn => {
+      return {
+        ...btn,
+        disabled: !hasSelected,
+        onClick: () => {
+          btn.onClick && btn.onClick(selectedRowKeys)
+        }
+      }
+    });
+    if(deleteUrl){
+      actionBtns.unshift({
+        disabled: !hasSelected,
+        text: '删除',
+        onClick: this.handleDeleteRows
+      })
+    }
+
     return (
       <div className="app-table-selectarea">
         {
           <React.Fragment>
             <GenerateFormBtns
               className="app-table-selectarea-btns"
-              btns={selectActionBtns.map(btn => {
-                return {
-                  ...btn
-                }
-              })}
+              btns={actionBtns}
             />
             <span style={{ marginLeft: 8 }}>
               {`已选 ${selectedRowKeys.length} 项`}
@@ -194,6 +224,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
       showFilter,
       filterList,
       className,
+      deleteUrl,
       showSelect,
       selectActionBtns,
       ...props
@@ -201,7 +232,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     const rowKeyFunc = typeof rowKey === 'function'
       ? rowKey
       : (record: IDataRow) => `${record.id}`;
-    const rowSelection = showSelect ? {
+    const rowSelection = showSelect || deleteUrl ? {
       selectedRowKeys,
       columnWidth: '0.2rem',
       onChange: this.onSelectChange,

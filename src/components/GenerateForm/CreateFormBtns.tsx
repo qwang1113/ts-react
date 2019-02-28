@@ -13,7 +13,7 @@ interface IFormSubmitButton {
 export interface IFormBtnProps {
   className?: string; // 类名
   style?: object; // 样式
-  btns?: (IFormSubmitButton & ButtonProps)[]
+  btns?: ((IFormSubmitButton & ButtonProps) | any)[]
 }
 
 class GenerateFormBtns extends React.Component<IFormBtnProps, {}> {

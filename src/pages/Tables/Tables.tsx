@@ -28,8 +28,14 @@ class Tables extends BaseComponent<{}, {}>{
         <Table
           showFilter
           showIndex
-          showSelect
-          selectActionBtns={[]}
+          // showSelect
+          selectActionBtns={[{
+            text: '新增用户',
+            onClick: (rows) => {
+              console.log(rows);
+            }
+          }]}
+          deleteUrl="/user/delete"
           filterList={filterList}
           url="/users"
           params={{order_func: 'ASC', order_by: 'id'}}
