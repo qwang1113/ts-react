@@ -27,10 +27,16 @@ class Tables extends BaseComponent<{}, {}>{
       <div className="tables-container">
         <Table
           showFilter
+          showIndex
+          showSelect
+          selectActionBtns={[]}
           filterList={filterList}
           url="/users"
           params={{order_func: 'ASC', order_by: 'id'}}
           columns={this.columns}
+          // onDataChanged={(data, filter) => {
+          //   console.log(data, filter);
+          // }}
         />
       </div>
     );

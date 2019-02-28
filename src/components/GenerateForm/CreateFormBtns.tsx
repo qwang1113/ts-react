@@ -10,13 +10,13 @@ interface IFormSubmitButton {
   text: string;
 }
 
-interface IFormProps {
+export interface IFormBtnProps {
   className?: string; // 类名
   style?: object; // 样式
   btns?: (IFormSubmitButton & ButtonProps)[]
 }
 
-class GenerateFormBtns extends React.Component<IFormProps, {}> {
+class GenerateFormBtns extends React.Component<IFormBtnProps, {}> {
 
   render() {
     const {

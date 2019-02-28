@@ -6,20 +6,26 @@ import { Table } from 'antd';
 import { TableProps } from 'antd/lib/table';
 import GenerateForm from '@components/GenerateForm';
 import { IFormItemProps } from '@components/GenerateForm/createElement';
+import GenerateFormBtns, { IFormBtnProps } from '@components/GenerateForm/CreateFormBtns';
 
 interface IState {
   size: number;
   page: number;
   total: number;
-  data: {}[];
+  data: IBaseObj[];
   loading: boolean;
+  selectedRowKeys: Array<number>
 }
 
 interface IProps extends TableProps<{}> {
-  showFilter?: boolean;
+  showFilter?: boolean; // 是否展示筛选栏
+  showIndex?: boolean; // 是否显示索引列
+  showSelect?: boolean; // 行是否可选
   filterList?: IFormItemProps[];
   url?: string;
   params?: object;
+  onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
+  selectActionBtns: IFormBtnProps[]
 }
 
 class BaseTable extends BaseComponent<IProps, IState>{
@@ -29,7 +35,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
     page: 0,
     total: 0,
     loading: false,
-    data: []
+    data: [],
+    selectedRowKeys: [], // 表格已经选择的列
   }
 
   form = null;
@@ -82,7 +89,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
 
   async fetchData() {
     const { size, page } = this.state;
-    const { url, params } = this.props;
+    const { url, params, onDataChanged } = this.props;
     this.setState({
       loading: true
     });
@@ -95,6 +102,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     });
     if (res) {
       const { content, total } = res;
+      onDataChanged && onDataChanged(content, filterValues);
       this.setState(({ page }) => {
         return {
           page: total === content.length ? page : page + 1,
@@ -106,6 +114,71 @@ class BaseTable extends BaseComponent<IProps, IState>{
     }
   }
 
+  /**
+   * 获取计算后的表格列配置
+   */
+  getComputedColumns = () => {
+    const { size, page } = this.state;
+    const {
+      columns,
+      showIndex,
+    } = this.props;
+
+    let computedColumns = [
+      ...columns
+    ];
+    if (showIndex) {
+      computedColumns.unshift({
+        key: "index",
+        title: '序号',
+        dataIndex: 'index',
+        align: 'left',
+        render: (text, record, index) => {
+          const key = size * page + index + 1;
+          return key < 10 ? `0${key}` : key;
+        },
+      })
+    }
+
+    return computedColumns;
+  }
+
+  /**
+   * 行选择change时
+   * @param selectedRowKeys Array<number> 选择的行Key
+   */
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
+
+  generateSelectActionBtns() {
+    const { selectedRowKeys } = this.state;
+    const { showSelect, selectActionBtns } = this.props;
+    const hasSelected = selectedRowKeys.length > 0;
+    if (!showSelect) {
+      return null;
+    }
+    return (
+      <div className="app-table-selectarea">
+        {
+          <React.Fragment>
+            <GenerateFormBtns
+              className="app-table-selectarea-btns"
+              btns={selectActionBtns.map(btn => {
+                return {
+                  ...btn
+                }
+              })}
+            />
+            <span style={{ marginLeft: 8 }}>
+              {`已选 ${selectedRowKeys.length} 项`}
+            </span>
+          </React.Fragment>
+        }
+      </div>
+    )
+  }
+
   render() {
     const {
       size,
@@ -113,6 +186,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
       page,
       total,
       loading,
+      selectedRowKeys
     } = this.state;
     const {
       rowKey,
@@ -120,11 +194,18 @@ class BaseTable extends BaseComponent<IProps, IState>{
       showFilter,
       filterList,
       className,
+      showSelect,
+      selectActionBtns,
       ...props
     } = this.props;
     const rowKeyFunc = typeof rowKey === 'function'
       ? rowKey
       : (record: IDataRow) => `${record.id}`;
+    const rowSelection = showSelect ? {
+      selectedRowKeys,
+      columnWidth: '0.2rem',
+      onChange: this.onSelectChange,
+    } : null;
     return (
       <div className="app-table" style={{ backgroundColor: '#fff' }}>
         {
@@ -147,13 +228,17 @@ class BaseTable extends BaseComponent<IProps, IState>{
             </div>
           )
         }
+        {
+          this.generateSelectActionBtns()
+        }
         <Table
-          className={`base-table ${className}`}
           size="middle"
-          rowKey={rowKeyFunc}
           dataSource={data}
-          columns={columns}
           loading={loading}
+          rowKey={rowKeyFunc}
+          rowSelection={rowSelection}
+          columns={this.getComputedColumns()}
+          className={`app-base-table ${className}`}
           pagination={{
             total,
             current: page + 1,

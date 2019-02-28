@@ -1,16 +1,30 @@
-.app-table-search-bar{
-  background-color: #fff;
-  padding: 14px 0;
-  .form-content{
-    padding: 0;
-    .ant-form-item{
-      justify-content: flex-start;
+.app-table {
+  padding: 14px;
+  &-search-bar {
+    background-color: #fff;
+
+    .form-content {
+      padding: 0;
+
+      .ant-form-item {
+        justify-content: flex-start;
+      }
     }
   }
-}
 
-.base-table{
-  padding: 0 12px;
-  padding-bottom: 30px;
-}
+  &-selectarea{
+    display: flex;
+    align-items: center;
+    &-btns{
+      display: flex;
+      align-items: center;
+      margin-bottom: 0;
+    }
+  }
 
+  &-base-table {
+    padding-bottom: 30px;
+  }
+
+
+}
