@@ -14,12 +14,7 @@ class Home extends BaseComponent<{}, {}>{
           cols={2}
           className="app-container"
           getForm={form => this.form = form}
-          onSubmit={(e: React.FormEvent) => {
-            e.stopPropagation();
-            this.$getFormValue(this.form).then(val => {
-              console.log(val);
-            })
-          }}
+          onFormSubmit={val => console.log(val)}
           btns={[{
             text: '确定',
             type: 'primary',
@@ -123,7 +118,26 @@ class Home extends BaseComponent<{}, {}>{
               type: 'TextArea',
               required: true,
               initialValue: '我是文本域'
-            }, null,
+            }, 
+            <Title text="自定义组件" />,
+            {
+              type: 'Custom',
+              dataKey: 'Custom',
+              label: '自定义组件',
+              initialValue: '这是自定义组件初始值',
+              component: (value, onChange) => {
+                return (
+                  <input 
+                    type="text" 
+                    value={value} 
+                    onChange={(e) => {
+                      onChange(e.target.value);
+                    }} 
+                  />
+                )
+              }
+            },
+            null
           ]}
         />
       </div>

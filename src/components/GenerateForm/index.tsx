@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   Form,
 } from 'antd';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 
 import {
   FormComponentProps,
@@ -14,21 +14,23 @@ import CreateElement, {
 } from './createElement';
 import './index.less';
 import GenerateFormBtns from './CreateFormBtns';
+import BaseComponent from '@components/Base';
 
 interface IFormSubmitButton {
   text: string;
 }
 
-interface IFormProps extends FormProps{
+interface IFormProps extends FormProps {
   cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
   items: (IFormItemProps | JSX.Element)[];
   btnContainerClassName?: string
   btnContainerStyle?: React.StyleHTMLAttributes<any>
   btns?: (IFormSubmitButton & ButtonProps)[]
   getForm?: (form: any) => any
+  onFormSubmit?: (formFields: any) => any
 }
 
-class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> {
+class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
 
   constructor(props) {
     super(props);
@@ -116,6 +118,43 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
     return item && typeof (item as IFormItemProps)['dataKey'] !== 'undefined'
   }
 
+  /**
+   * 处理表单提交
+   */
+  handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { items, onFormSubmit } = this.props;
+    const values = await this.$getFormValue(this.props.form);
+    let clonedValues: IBaseObj = Object.assign({}, values);
+    Object.keys(values).forEach(key => {
+      const currentItem = items.find(item => {
+        return this.isFormItemProps(item) && item.dataKey === key
+      });
+      // fuck
+      if (!this.isFormItemProps(currentItem)) {
+        return;
+      }
+      const type = currentItem.type;
+      // 处理文件上传的情况, 取出id
+      if (type === 'Upload' && values[key]) {
+        if (!currentItem.max || currentItem.max === 1) {
+          // 单文件
+          if (get(values, `${key}.file.status`) === 'done') {
+            clonedValues[key] = get(values, `${key}.file.response.id`)
+          }
+        } else {
+          // 多文件
+          clonedValues[key] = get(values, `${key}.fileList`, []).map(file => {
+            if (get(file, `status`) === 'done') {
+              return get(file, `response.id`);
+            }
+          })
+        }
+      }
+    });
+    onFormSubmit && onFormSubmit(clonedValues);
+  }
+
   render() {
     const {
       btns,
@@ -126,12 +165,15 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
       btnContainerClassName,
       form, // 排除(antd报错)
       getForm, // 排除(这个属性本身已经使用了, 不能透传到下面)
+      onSubmit, // 需要自动处理submit
+      onFormSubmit, // 排除
       ...formProps
     } = this.props;
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <Form 
-        className={`form-content col-${cols} ${className}`} 
+      <Form
+        className={`form-content col-${cols} ${className}`}
+        onSubmit={this.handleSubmit}
         {...formProps}
       >
         {
@@ -155,10 +197,10 @@ class GenerateForm extends React.Component<IFormProps & FormComponentProps, {}> 
                 {item}
               </div>
             ) : (
-              <React.Fragment key={idx}>
-                {item}
-              </React.Fragment>
-            );
+                <React.Fragment key={idx}>
+                  {item}
+                </React.Fragment>
+              );
           })
         }
         {

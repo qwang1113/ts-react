@@ -12,3 +12,8 @@ declare interface IDataRow {
   createdAt?: string;
   updateAt?: string;
 }
+
+// 基础对象
+declare interface IBaseObj {
+  [propName: string]: any
+}

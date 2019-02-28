@@ -1,6 +1,9 @@
 import { IMenu } from './menu';
 
-export function hasStorage(){
+/**
+ * 检查storage
+ */
+export function hasStorage(): boolean {
   return typeof sessionStorage !== 'undefined' && typeof localStorage !== 'undefined';
 }
 
@@ -12,7 +15,7 @@ export function hasStorage(){
  * @returns string
  */
 export function getSessionStorage(name: string): string {
-  if(hasStorage){
+  if (hasStorage) {
     return sessionStorage.getItem(name);
   }
   return '';
@@ -26,7 +29,7 @@ export function getSessionStorage(name: string): string {
  * @returns string
  */
 export function setSessionStorage(name: string, value: string): void {
-  if(hasStorage){
+  if (hasStorage) {
     sessionStorage.setItem(name, value);
   }
 }
@@ -39,7 +42,7 @@ export function setSessionStorage(name: string, value: string): void {
  * @returns string
  */
 export function removeSessionStorage(name: string): void {
-  if(hasStorage){
+  if (hasStorage) {
     sessionStorage.removeItem(name);
   }
 }
@@ -52,7 +55,7 @@ export function removeSessionStorage(name: string): void {
  * @returns string
  */
 export function getLocalStorage(name: string): string {
-  if(hasStorage){
+  if (hasStorage) {
     return localStorage.getItem(name);
   }
   return '';
@@ -66,7 +69,7 @@ export function getLocalStorage(name: string): string {
  * @returns string
  */
 export function setLocalStorage(name: string, value: string): void {
-  if(hasStorage){
+  if (hasStorage) {
     localStorage.setItem(name, value);
   }
 }
@@ -79,9 +82,22 @@ export function setLocalStorage(name: string, value: string): void {
  * @returns string
  */
 export function removeLocalStorage(name: string): void {
-  if(hasStorage){
+  if (hasStorage) {
     localStorage.removeItem(name);
   }
+}
+
+/**
+ * 延时方法
+ * @param time number 延时时间
+ * @returns Promise
+ */
+export function sleep(time: number = 1000): Promise<any> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  })
 }
 
 /**

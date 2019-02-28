@@ -9,6 +9,8 @@ import {
   Switch,
   Rate,
   Spin,
+  Cascader,
+  InputNumber,
 } from 'antd';
 
 import Upload from '@components/Upload';
@@ -62,6 +64,7 @@ export interface IFormItemProps extends IFormItemBase {
   params?: object;
   labelKey?: string
   valueKey?: string
+  childrenKey?: string
 }
 
 const {
@@ -76,9 +79,11 @@ const Components: IComponents = {
   Select,
   Switch,
   Upload,
+  Cascader,
   WeekPicker,
   DatePicker,
   MonthPicker,
+  InputNumber,
   RangePicker,
   Radio: Radio.Group,
   Checkbox: Checkbox.Group,
@@ -115,8 +120,9 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
   async doFetch(options: string) {
     const {
       params,
+      valueKey = 'id',
       labelKey = 'name',
-      valueKey = 'id'
+      childrenKey = 'children'
     } = this.props;
     const res: ISelectOption[] = await Get(options, params);
     this.hideLoading();
@@ -124,7 +130,8 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
       this.updateOption(res.map(d => {
         return {
           label: d[labelKey],
-          value: d[valueKey]
+          value: d[valueKey],
+          children: d[childrenKey]
         }
       }));
     }
@@ -162,9 +169,16 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
       checked,
       onChange,
       fileList,
+      component,
       placeholder,
       componentProps,
     } = this.props;
+    if (type === 'Custom') {
+      if(typeof component === 'function'){
+        return component(value, onChange);
+      }
+      return component;
+    }
     const ele = Components[type];
     let props: { [propName: string]: any } = {
       value,
@@ -174,6 +188,12 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
     };
     let children = null;
     switch (type) {
+      case 'TextArea':
+        props.rows = 5;
+        break;
+      case 'Cascader':
+        props.allowClear = true;
+        break;
       case 'Rate':
         props.allowHalf = true;
         break;
@@ -221,9 +241,6 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
           });
         }
         break;
-      case 'TextArea':
-        props.rows = 5;
-        break;
       default:
         break;
     }
@@ -231,9 +248,9 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
     // 合并默认属性与自定义属性
     Object.assign(props, componentProps);
     // 如果loading正在加载
-    if(this.loading){
+    if (this.loading) {
       return (
-        <Spin size="small" />
+        <Spin />
       )
     }
     return React.createElement(ele, props, children);
