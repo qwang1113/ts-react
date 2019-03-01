@@ -6,14 +6,14 @@ import {
 import './index.less';
 import { ButtonProps } from 'antd/lib/button';
 
-interface IFormSubmitButton {
+export interface IActionBtn {
   text: string;
 }
 
 export interface IFormBtnProps {
   className?: string; // 类名
   style?: object; // 样式
-  btns?: ((IFormSubmitButton & ButtonProps) | any)[]
+  btns?: (IActionBtn & ButtonProps)[]
 }
 
 class GenerateFormBtns extends React.Component<IFormBtnProps, {}> {

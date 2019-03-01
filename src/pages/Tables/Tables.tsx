@@ -9,6 +9,10 @@ const filterList = [{
   dataKey: 'search',
   type: 'Input',
   placeholder: '请输入...'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime',
+  type: 'RangePicker'
 }];
 
 class Tables extends BaseComponent<{}, {}>{
@@ -28,9 +32,9 @@ class Tables extends BaseComponent<{}, {}>{
         <Table
           showFilter
           showIndex
-          // showSelect
-          selectActionBtns={[{
+          actionBtns={[{
             text: '新增用户',
+            // withSelect: true,
             onClick: (rows) => {
               console.log(rows);
             }

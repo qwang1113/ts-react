@@ -151,6 +151,13 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
           })
         }
       }
+      // 将RangePicker的startTime, 和endTime展开
+      if (type === 'RangePicker' && Array.isArray(values[key])) {
+        const [startTime, endTime] = values[key];
+        clonedValues['startTime'] = startTime;
+        clonedValues['endTime'] = endTime;
+        delete clonedValues[key];
+      }
     });
     onFormSubmit && onFormSubmit(clonedValues);
   }

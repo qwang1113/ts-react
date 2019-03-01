@@ -174,7 +174,7 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
       componentProps,
     } = this.props;
     if (type === 'Custom') {
-      if(typeof component === 'function'){
+      if (typeof component === 'function') {
         return component(value, onChange);
       }
       return component;
@@ -190,6 +190,12 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
     switch (type) {
       case 'TextArea':
         props.rows = 5;
+        break;
+      case 'RangePicker':
+        props.rows = 5;
+        if (!Array.isArray(props.placeholder)) {
+          props.placeholder = ['开始时间', '结束时间'];
+        }
         break;
       case 'Cascader':
         props.allowClear = true;

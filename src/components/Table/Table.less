@@ -1,5 +1,6 @@
 .app-table {
   padding: 14px;
+
   &-search-bar {
     background-color: #fff;
 
@@ -12,13 +13,18 @@
     }
   }
 
-  &-selectarea{
+  &-selectarea {
     display: flex;
     align-items: center;
-    &-btns{
+
+    &-btns {
       display: flex;
       align-items: center;
       margin-bottom: 0;
+
+      .ant-form-item-label {
+        display: none;
+      }
     }
   }
 

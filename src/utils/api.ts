@@ -11,12 +11,15 @@ const headers = {
 };
 
 const generate = async response => {
+  message.destroy();
   const res = await response;
   let result;
   try {
     result = await res.json();
   } catch (error) {
-    message.destroy();
+    if ([200, 204].includes(res.status)) {
+      return {};
+    }
     message.error('网络异常');
     return null;
   }
@@ -28,7 +31,6 @@ const generate = async response => {
       removeSessionStorage('token');
       location.href = '/#/login';
     default:
-      message.destroy();
       message.error(result.message || '操作失败');
   }
   return null;
