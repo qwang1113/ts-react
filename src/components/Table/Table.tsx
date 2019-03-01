@@ -57,7 +57,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     } else if (url) {
       this.fetchData();
     } else {
-      console.error('the url prop or dataSource must has one');
+      console.warn('you must provide a source for this table');
     }
   }
 
@@ -259,7 +259,6 @@ class BaseTable extends BaseComponent<IProps, IState>{
       selectedRowKeys
     } = this.state;
     const {
-      rowKey,
       columns,
       showFilter,
       filterList,
@@ -268,14 +267,18 @@ class BaseTable extends BaseComponent<IProps, IState>{
       actionBtns,
       ...props
     } = this.props;
-    const rowKeyFunc = typeof rowKey === 'function'
-      ? rowKey
-      : (record: IDataRow) => `${record.id}`;
     /* 是否需要显示表格选择列需要满足以下条件某一项
-       1. 传入deleteUrl时
-       2. actionBtns中某一项包含withSelect时 
+      1. 传入deleteUrl时
+      2. actionBtns中某一项包含withSelect时 
     */
     const isNeedShowSelect = !!actionBtns.find(({ withSelect }) => !!withSelect) || deleteUrl;
+    const rowKeyFunc = (record: IDataRow, idx) => {
+      if (isNeedShowSelect) {
+        return `${record.id}`;
+      }
+      return `${record.id}` || `${idx}`;
+    };
+
     const rowSelection = isNeedShowSelect ? {
       selectedRowKeys,
       columnWidth: '0.2rem',
