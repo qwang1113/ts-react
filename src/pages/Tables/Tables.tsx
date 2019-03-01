@@ -42,11 +42,11 @@ class Tables extends BaseComponent<{}, {}>{
           deleteUrl="/user/delete"
           filterList={filterList}
           url="/users"
-          params={{order_func: 'ASC', order_by: 'id'}}
+          params={{ order_func: 'ASC', order_by: 'id' }}
           columns={this.columns}
-          // onDataChanged={(data, filter) => {
-          //   console.log(data, filter);
-          // }}
+        // onDataChanged={(data, filter) => {
+        //   console.log(data, filter);
+        // }}
         />
       </div>
     );

@@ -39,10 +39,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
     size: 10,
     page: 0,
     total: 0,
-    loading: false,
-    deleteBtnLoading: false,
     data: [],
+    loading: false,
     selectedRowKeys: [], // 表格已经选择的列
+    deleteBtnLoading: false,
   }
 
   form = null;
@@ -265,6 +265,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
       className,
       deleteUrl,
       actionBtns,
+      style,
       ...props
     } = this.props;
     /* 是否需要显示表格选择列需要满足以下条件某一项
@@ -285,7 +286,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
       onChange: this.onSelectChange,
     } : null;
     return (
-      <div className="app-table" style={{ backgroundColor: '#fff' }}>
+      <div
+        className={`app-table ${className}`}
+        style={{ backgroundColor: '#fff', ...style }}
+      >
         {
           showFilter && Array.isArray(filterList) && (
             <div className="app-table-search-bar">
@@ -316,7 +320,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
           rowKey={rowKeyFunc}
           rowSelection={rowSelection}
           columns={this.getComputedColumns()}
-          className={`app-base-table ${className}`}
+          className={`app-base-table`}
           pagination={{
             total,
             current: page + 1,
