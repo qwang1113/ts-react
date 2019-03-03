@@ -1,14 +1,14 @@
-import * as React from 'react';
-import BaseComponent from '@components/Base';
-
-import "./Table.less";
 import { Table } from 'antd';
+import * as React from 'react';
 import { TableProps } from 'antd/lib/table';
+import BaseComponent from '@components/Base';
+import { ButtonProps } from 'antd/lib/button';
 import GenerateForm from '@components/GenerateForm';
 import { IFormItemProps } from '@components/GenerateForm/createElement';
 import GenerateFormBtns, { IActionBtn } from '@components/GenerateForm/CreateFormBtns';
-import { ButtonProps } from 'antd/lib/button';
 
+import "./Table.less";
+import Modal from '@components/Modal/Modal';
 interface IState {
   size: number;
   page: number;
@@ -19,18 +19,34 @@ interface IState {
   selectedRowKeys: Array<number>
 }
 
+interface IRowFunc {
+  (row: any, index: number): any
+}
+
+interface ITableActionBtn {
+  text: string;
+  color?: string;
+  disabled?: boolean | IRowFunc;
+  visiable?: boolean | IRowFunc;
+  type?: 'edit' | 'detail' | 'delete';
+  onClick?: IRowFunc
+}
+
 interface IProps extends TableProps<{}> {
   showFilter?: boolean; // 是否展示筛选栏
   showIndex?: boolean; // 是否显示索引列
+  batchDelete?: boolean; // 批量删除
   deleteUrl?: string; // 删除链接
   filterList?: IFormItemProps[];
   url?: string;
   params?: object;
+  deleteParams?: object;
   onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
-  actionBtns?: (IActionBtn & ButtonProps & {
+  btns?: (IActionBtn & ButtonProps & {
     withSelect?: boolean;
     onClick?: (any) => any
-  })[]
+  })[];
+  actionBtns?: ITableActionBtn[]
 }
 
 class BaseTable extends BaseComponent<IProps, IState>{
@@ -61,6 +77,9 @@ class BaseTable extends BaseComponent<IProps, IState>{
     }
   }
 
+  /**
+   * 分页页码改变回调
+   */
   changePage = (page, pageSize, ) => {
     this.setState({
       page: page - 1,
@@ -93,6 +112,9 @@ class BaseTable extends BaseComponent<IProps, IState>{
     }, this.fetchData);
   };
 
+  /**
+   * 当配置了表格加载数据时, 加载表格数据
+   */
   async fetchData() {
     const { size, page } = this.state;
     const {
@@ -110,7 +132,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
       if (hasFilter) {
         filterValues = await this.$getFormValue(this.form);
       }
-      const res = await this.$Get(url, {
+      const res = await this.$Post(url, {
         ...params,
         ...filterValues,
         size,
@@ -139,11 +161,14 @@ class BaseTable extends BaseComponent<IProps, IState>{
     const {
       columns,
       showIndex,
+      actionBtns,
+      deleteUrl
     } = this.props;
 
     let computedColumns = [
       ...columns
     ];
+
     if (showIndex) {
       computedColumns.unshift({
         key: "index",
@@ -157,7 +182,90 @@ class BaseTable extends BaseComponent<IProps, IState>{
       })
     }
 
+    if (actionBtns && actionBtns.length) {
+      computedColumns.push({
+        key: "action",
+        title: '操作',
+        align: 'center',
+        render: (text, row, index) => {
+          let computedActionBtns = [...actionBtns];
+          if (deleteUrl && !actionBtns.find(btn => btn.type === 'delete')) {
+            computedActionBtns.push({
+              text: '删除',
+              type: 'delete',
+              onClick: row => this.handleDeleteRows([row.id])
+            });
+          }
+          const generateBtnFunc = (btns: ITableActionBtn[]) => {
+            return btns.map(
+              (btn: ITableActionBtn) => {
+                return this.generateTableActionBtn(
+                  row,
+                  index,
+                  btn,
+                )
+              }
+            );
+          }
+          return generateBtnFunc(computedActionBtns);
+        },
+      });
+    }
+
     return computedColumns;
+  }
+
+  /**
+   * 生成表格按钮组
+   * @param row object 表格行数据
+   * @index number 行索引
+   * @btn 行按钮配置
+   */
+  generateTableActionBtn = (
+    row,
+    index,
+    btn,
+  ) => {
+    const {
+      color,
+      disabled,
+      text,
+      onClick,
+      type,
+      visiable = true
+    } = btn;
+    const colorsMap = {
+      detail: 'blue',
+      edit: 'green',
+      delete: '#f55'
+    }
+    const computedDisabled = typeof disabled === 'function' ? disabled(row, index) : disabled;
+    const computedVisiable = typeof visiable === 'function' ? visiable(row, index) : visiable;
+    if (!computedVisiable) {
+      return null;
+    }
+    return (
+      <span
+        key={btn.text}
+        className={
+          `app-table-action-btn ${computedDisabled ? 'disabled' : ''}`
+        }
+        style={{ color: color || colorsMap[type] }}
+        onClick={() => {
+          if (onClick) {
+            if (!computedDisabled) {
+              onClick(row, index);
+            }
+          } else {
+            if (btn.type === 'delete') {
+              this.handleDeleteRows([row.id]);
+            }
+          }
+        }}
+      >
+        {text}
+      </span>
+    )
   }
 
   /**
@@ -172,39 +280,48 @@ class BaseTable extends BaseComponent<IProps, IState>{
    * 多选删除按钮
    * @param selectedRowKeys Array<number> 待删除项目id
    */
-  handleDeleteRows = async () => {
-    const { deleteUrl } = this.props;
+  handleDeleteRows = async (idList) => {
+    const { deleteUrl, deleteParams = {} } = this.props;
     const { selectedRowKeys } = this.state;
     this.setState({
       deleteBtnLoading: true,
-    }, async () => {
+    });
+    try {
+      await Modal.comfirm({
+        title: '提示',
+        content: '确定删除吗?'
+      });
       const res = await this.$Get(deleteUrl, {
-        idList: selectedRowKeys
+        idList: Array.isArray(idList) ? idList : selectedRowKeys,
+        ...deleteParams
       });
       if (res) {
         this.setState({
           selectedRowKeys: [],
-          deleteBtnLoading: false
         }, this.fetchData);
       }
+    } catch (error) {}
+    this.setState({
+      deleteBtnLoading: false
     });
+
   }
 
   /**
    * 生成选择之后的自定义按钮, 可根据传入的deleteUrl生成默认的删除按钮以及方法
    */
-  generateActionBtns() {
+  generateTableBtns() {
     const { selectedRowKeys, deleteBtnLoading } = this.state;
-    const { actionBtns, deleteUrl } = this.props;
+    const { btns, deleteUrl, batchDelete } = this.props;
     const hasSelected = selectedRowKeys.length > 0;
-    const isNeedShowSelect = !!actionBtns.find(({ withSelect }) => !!withSelect) || deleteUrl;
+    const isNeedShowSelect = !!btns.find(({ withSelect }) => !!withSelect) || deleteUrl;
     if (
       !deleteUrl
-      && (!actionBtns || actionBtns.length === 0)
+      && (!btns || btns.length === 0)
     ) {
       return null;
     }
-    let computedActionBtns = actionBtns.map(({ withSelect, ...btn }) => {
+    let computedBtns = btns.map(({ withSelect, ...btn }) => {
       return {
         ...btn,
         disabled: !hasSelected && withSelect,
@@ -215,8 +332,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
           : btn.onClick
       }
     });
-    if (deleteUrl) {
-      computedActionBtns.unshift({
+    if (deleteUrl && batchDelete) {
+      computedBtns.unshift({
         disabled: !hasSelected,
         text: '删除',
         onClick: this.handleDeleteRows,
@@ -229,15 +346,15 @@ class BaseTable extends BaseComponent<IProps, IState>{
         {
           <React.Fragment>
             {
-              computedActionBtns.length > 0 && (
+              computedBtns.length > 0 && (
                 <GenerateFormBtns
-                  btns={computedActionBtns}
+                  btns={computedBtns}
                   className="app-table-selectarea-btns"
                 />
               )
             }
             {
-              isNeedShowSelect && (
+              isNeedShowSelect && hasSelected && (
                 <span style={{ marginLeft: 8 }}>
                   {`已选 ${selectedRowKeys.length} 项`}
                 </span>
@@ -264,15 +381,17 @@ class BaseTable extends BaseComponent<IProps, IState>{
       filterList,
       className,
       deleteUrl,
-      actionBtns,
+      batchDelete,
+      btns,
       style,
       ...props
     } = this.props;
     /* 是否需要显示表格选择列需要满足以下条件某一项
       1. 传入deleteUrl时
-      2. actionBtns中某一项包含withSelect时 
+      2. btns中某一项包含withSelect时 
     */
-    const isNeedShowSelect = !!actionBtns.find(({ withSelect }) => !!withSelect) || deleteUrl;
+    const isNeedShowSelect = !!btns.find(({ withSelect }) => !!withSelect)
+      || (deleteUrl && batchDelete);
     const rowKeyFunc = (record: IDataRow, idx) => {
       if (isNeedShowSelect) {
         return `${record.id}`;
@@ -311,7 +430,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
           )
         }
         {
-          this.generateActionBtns()
+          this.generateTableBtns()
         }
         <Table
           size="middle"

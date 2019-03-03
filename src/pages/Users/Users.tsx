@@ -1,8 +1,9 @@
 import * as React from 'react';
 import BaseComponent from '@components/Base';
 
-import "./Tables.less";
+import "./Users.less";
 import Table from '@components/Table/Table';
+import { getSessionStorage } from '@utils/util';
 
 const filterList = [{
   label: '用户名',
@@ -27,26 +28,51 @@ class Tables extends BaseComponent<{}, {}>{
   }]
 
   render() {
+    console.log(getSessionStorage('userInfo'));
+    const userInfo = JSON.parse(getSessionStorage('userInfo') || '{}');
     return (
       <div className="tables-container">
         <Table
           showFilter
           showIndex
-          actionBtns={[{
+          batchDelete
+          btns={[{
             text: '新增用户',
             // withSelect: true,
             onClick: (rows) => {
               console.log(rows);
             }
           }]}
+          actionBtns={[{
+            text: '详情',
+            type: 'detail',
+            onClick: (row, idx) => {
+              console.log(row, idx);
+            }
+          }, {
+            text: '编辑',
+            type: 'edit',
+            onClick: (row, idx) => {
+              console.log(row, idx);
+            }
+          }, {
+            text: '删除',
+            type: 'delete',
+            disabled: ({ id }) => id === userInfo.id,
+            // 一下条件同时满足则调用表格默认删除方法
+            // 1. 当deleteUrl传入
+            // 2. type==='delete'
+            // 3. onClick不传
+          }]}
+          deleteParams={{}}
           deleteUrl="/user/delete"
           filterList={filterList}
           url="/users"
           params={{ order_func: 'ASC', order_by: 'id' }}
           columns={this.columns}
-        // onDataChanged={(data, filter) => {
-        //   console.log(data, filter);
-        // }}
+          onDataChanged={(data, filter) => {
+            console.log(data, filter);
+          }}
         />
       </div>
     );

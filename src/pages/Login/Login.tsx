@@ -32,6 +32,7 @@ class Login extends BaseComponent<{}, {}>{
       return;
     }
     setSessionStorage('token', res.token);
+    setSessionStorage('userInfo', JSON.stringify(res.user));
     Cookie.set('token', res.token);
     location.href = '/#/home';
   }

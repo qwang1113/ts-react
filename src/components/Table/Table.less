@@ -16,11 +16,11 @@
   &-selectarea {
     display: flex;
     align-items: center;
-
+    margin-bottom: 20px;
     &-btns {
       display: flex;
       align-items: center;
-      margin-bottom: 0;
+      margin-bottom: 0 !important;
 
       .ant-form-item-label {
         display: none;
@@ -30,6 +30,26 @@
 
   &-base-table {
     padding-bottom: 30px;
+  }
+
+  &-action-btn{
+    cursor: pointer;
+    transition: all .8s;
+    margin-right: 10px;
+    &:last-child{
+      margin-right: 0;
+    }
+    &:hover{
+      opacity: .6;
+    }
+    &.disabled{
+      transition: none;
+      cursor: not-allowed;
+      opacity: .3;
+      &:hover{
+        opacity: .3;
+      }
+    }
   }
 
 

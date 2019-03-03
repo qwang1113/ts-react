@@ -3,7 +3,7 @@ import { lazy } from 'react';
 export const Login = lazy(() => import( /* webpackChunkName: "Login" */ '@pages/Login/Login'));
 export const PublicHome = lazy(() => import( /* webpackChunkName: "PublicHome" */ '@components/Home'));
 export const NotFound = lazy(() => import( /* webpackChunkName: "NotFound" */ '@components/NotFound'));
-export const Tables = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Tables/Tables'))
+export const Users = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Users/Users'))
 export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
 
 export interface IMenu {
@@ -24,10 +24,10 @@ export const menu: IMenu[] = [
     component: Home
   },
   {
-    path: '/tables',
-    title: '数据表管理',
+    path: '/users',
+    title: '用户管理',
     icon: 'user',
-    component: Tables
+    component: Users
   },
 ];
 
