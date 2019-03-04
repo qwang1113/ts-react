@@ -32,24 +32,39 @@ interface ITableActionBtn {
   onClick?: IRowFunc
 }
 
-interface IProps extends TableProps<{}> {
-  showFilter?: boolean; // 是否展示筛选栏
-  showIndex?: boolean; // 是否显示索引列
-  batchDelete?: boolean; // 批量删除
-  deleteUrl?: string; // 删除链接
-  filterList?: IFormItemProps[];
+interface IDeleteOption {
+  batch?: boolean;
   url?: string;
   params?: object;
-  deleteParams?: object;
-  onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
+  disabled?: boolean | IRowFunc;
+  visiable?: boolean | IRowFunc;
+}
+
+interface IDataOptions {
+  url?: string;
+  filterList?: IFormItemProps[];
+  params?: object;
+}
+
+interface IProps extends TableProps<{}> {
+  deleteOption?: IDeleteOption
+  dataOptions?: IDataOptions;
+  showIndex?: boolean; // 是否显示索引列
   btns?: (IActionBtn & ButtonProps & {
     withSelect?: boolean;
     onClick?: (any) => any
   })[];
   actionBtns?: ITableActionBtn[]
+  onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
 }
 
 class BaseTable extends BaseComponent<IProps, IState>{
+
+  static defaultProps = {
+    showIndex: false,
+    dataOptions: {},
+    deleteOption: {},
+  }
 
   state = {
     size: 10,
@@ -64,13 +79,13 @@ class BaseTable extends BaseComponent<IProps, IState>{
   form = null;
 
   componentDidMount() {
-    const { url, dataSource } = this.props;
+    const { dataOptions, dataSource } = this.props;
     // 获取缓存的size
     const size = localStorage.getItem('tableSize') || 10;
     this.setState({ size: +size })
     if (Array.isArray(dataSource)) {
       this.setState({ data: dataSource });
-    } else if (url) {
+    } else if (dataOptions.url) {
       this.fetchData();
     } else {
       console.warn('you must provide a source for this table');
@@ -118,13 +133,16 @@ class BaseTable extends BaseComponent<IProps, IState>{
   async fetchData() {
     const { size, page } = this.state;
     const {
-      url,
-      params,
+      dataOptions,
       onDataChanged,
-      showFilter,
-      filterList
     } = this.props;
-    const hasFilter = showFilter && Array.isArray(filterList);
+
+    const {
+      url,
+      filterList,
+      params
+    } = dataOptions;
+    const hasFilter = Array.isArray(filterList) && filterList.length > 0;
     this.setState({
       loading: true
     }, async () => {
@@ -162,8 +180,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
       columns,
       showIndex,
       actionBtns,
-      deleteUrl
+      deleteOption
     } = this.props;
+
+    const { url: deleteUrl, disabled, visiable } = deleteOption;
 
     let computedColumns = [
       ...columns
@@ -191,9 +211,11 @@ class BaseTable extends BaseComponent<IProps, IState>{
           let computedActionBtns = [...actionBtns];
           if (deleteUrl && !actionBtns.find(btn => btn.type === 'delete')) {
             computedActionBtns.push({
+              disabled, 
+              visiable,
               text: '删除',
               type: 'delete',
-              onClick: row => this.handleDeleteRows([row.id])
+              onClick: row => this.handleDeleteRows(row.id),
             });
           }
           const generateBtnFunc = (btns: ITableActionBtn[]) => {
@@ -252,13 +274,14 @@ class BaseTable extends BaseComponent<IProps, IState>{
         }
         style={{ color: color || colorsMap[type] }}
         onClick={() => {
+          if (computedDisabled) {
+            return;
+          }
           if (onClick) {
-            if (!computedDisabled) {
-              onClick(row, index);
-            }
+            onClick(row, index);
           } else {
             if (btn.type === 'delete') {
-              this.handleDeleteRows([row.id]);
+              this.handleDeleteRows(row.id);
             }
           }
         }}
@@ -280,10 +303,12 @@ class BaseTable extends BaseComponent<IProps, IState>{
    * 多选删除按钮
    * @param selectedRowKeys Array<number> 待删除项目id
    */
-  handleDeleteRows = async (idList) => {
-    const { deleteUrl, deleteParams = {} } = this.props;
+  handleDeleteRows = async (id) => {
+    const { deleteOption } = this.props;
     const { selectedRowKeys } = this.state;
-    this.setState({
+    const hasId = typeof id === 'number';
+    const { url: deleteUrl, params: deleteParams } = deleteOption;
+    hasId && this.setState({
       deleteBtnLoading: true,
     });
     try {
@@ -292,7 +317,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
         content: '确定删除吗?'
       });
       const res = await this.$Get(deleteUrl, {
-        idList: Array.isArray(idList) ? idList : selectedRowKeys,
+        idList: hasId ? [id] : selectedRowKeys,
         ...deleteParams
       });
       if (res) {
@@ -300,8 +325,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
           selectedRowKeys: [],
         }, this.fetchData);
       }
-    } catch (error) {}
-    this.setState({
+    } catch (error) { }
+    hasId && this.setState({
       deleteBtnLoading: false
     });
 
@@ -312,7 +337,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
    */
   generateTableBtns() {
     const { selectedRowKeys, deleteBtnLoading } = this.state;
-    const { btns, deleteUrl, batchDelete } = this.props;
+    const { btns, deleteOption } = this.props;
+    const { batch: batchDelete, url: deleteUrl } = deleteOption;
     const hasSelected = selectedRowKeys.length > 0;
     const isNeedShowSelect = !!btns.find(({ withSelect }) => !!withSelect) || deleteUrl;
     if (
@@ -377,19 +403,22 @@ class BaseTable extends BaseComponent<IProps, IState>{
     } = this.state;
     const {
       columns,
-      showFilter,
-      filterList,
       className,
-      deleteUrl,
-      batchDelete,
       btns,
       style,
+      deleteOption,
+      dataOptions,
       ...props
     } = this.props;
     /* 是否需要显示表格选择列需要满足以下条件某一项
       1. 传入deleteUrl时
       2. btns中某一项包含withSelect时 
     */
+    const { batch: batchDelete, url: deleteUrl } = deleteOption;
+    const {
+      filterList,
+    } = dataOptions;
+    const hasFilter = Array.isArray(filterList) && filterList.length > 0;
     const isNeedShowSelect = !!btns.find(({ withSelect }) => !!withSelect)
       || (deleteUrl && batchDelete);
     const rowKeyFunc = (record: IDataRow, idx) => {
@@ -410,10 +439,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
         style={{ backgroundColor: '#fff', ...style }}
       >
         {
-          showFilter && Array.isArray(filterList) && (
+          hasFilter && (
             <div className="app-table-search-bar">
               <GenerateForm
-                cols={4}
+                cols={3}
                 items={filterList}
                 className="search-bar-form"
                 btns={[{

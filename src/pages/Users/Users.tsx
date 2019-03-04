@@ -4,6 +4,7 @@ import BaseComponent from '@components/Base';
 import "./Users.less";
 import Table from '@components/Table/Table';
 import { getSessionStorage } from '@utils/util';
+import ModalForm from '@components/ModalForm/ModalForm';
 
 const filterList = [{
   label: '用户名',
@@ -12,7 +13,27 @@ const filterList = [{
   placeholder: '请输入...'
 }, {
   label: '注册时间',
-  dataKey: 'rigistTime',
+  dataKey: 'rigistTime1',
+  type: 'RangePicker'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime2',
+  type: 'RangePicker'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime3',
+  type: 'RangePicker'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime4',
+  type: 'RangePicker'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime5',
+  type: 'RangePicker'
+}, {
+  label: '注册时间',
+  dataKey: 'rigistTime6',
   type: 'RangePicker'
 }];
 
@@ -27,21 +48,37 @@ class Tables extends BaseComponent<{}, {}>{
     key: 'createdAt',
   }]
 
+  handleAddNewUser = async () => {
+    ModalForm.setItems(filterList).show({
+      title: '新增用户'
+    }, (values, close) => {
+      console.log(values);
+      close();
+    });
+  }
+
   render() {
-    console.log(getSessionStorage('userInfo'));
     const userInfo = JSON.parse(getSessionStorage('userInfo') || '{}');
     return (
       <div className="tables-container">
         <Table
-          showFilter
           showIndex
-          batchDelete
+          deleteOption={{
+            batch: true,
+            url: '/user/delete',
+            params: {},
+            disabled: ({ id }) => id === userInfo.id,
+            visiable: ({ id }) => id === userInfo.id,
+          }}
+          dataOptions={{
+            url: '/users',
+            filterList: filterList,
+            params: {order_func: 'ASC', order_by: 'id'},
+          }}
           btns={[{
             text: '新增用户',
             // withSelect: true,
-            onClick: (rows) => {
-              console.log(rows);
-            }
+            onClick: this.handleAddNewUser
           }]}
           actionBtns={[{
             text: '详情',
@@ -55,20 +92,7 @@ class Tables extends BaseComponent<{}, {}>{
             onClick: (row, idx) => {
               console.log(row, idx);
             }
-          }, {
-            text: '删除',
-            type: 'delete',
-            disabled: ({ id }) => id === userInfo.id,
-            // 一下条件同时满足则调用表格默认删除方法
-            // 1. 当deleteUrl传入
-            // 2. type==='delete'
-            // 3. onClick不传
           }]}
-          deleteParams={{}}
-          deleteUrl="/user/delete"
-          filterList={filterList}
-          url="/users"
-          params={{ order_func: 'ASC', order_by: 'id' }}
           columns={this.columns}
           onDataChanged={(data, filter) => {
             console.log(data, filter);
