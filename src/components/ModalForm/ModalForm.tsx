@@ -7,9 +7,11 @@ import { FormComponentProps } from 'antd/lib/form';
 
 import "./index.less";
 import { ModalProps } from 'antd/lib/modal';
+import { IFormItemProps } from '@components/GenerateForm/createElement';
 
 interface IShowParams extends ModalProps {
-  cols?: 1 | 2 | 3 | 4
+  cols?: 1 | 2 | 3 | 4;
+  items: IFormItemProps[]
 }
 
 class ModalForm extends BaseComponent {
@@ -35,9 +37,10 @@ class ModalForm extends BaseComponent {
    * 显示modal
    */
   show = (obj: IShowParams, cb: Function) => {
-    const { cols, ...config } = obj;
+    const { cols, items, ...config } = obj;
     this.setState({
       cols: cols || 2,
+      items: items || [],
       modalProps: {
         ...config,
         visible: true,
@@ -50,23 +53,13 @@ class ModalForm extends BaseComponent {
    * 关闭
    */
   close = () => {
-    const { modalProps, } = this.state;
+    this.form.resetFields();
     this.setState({
+      items: [],
       modalProps: {
-        ...modalProps,
         visible: false,
       },
     });
-  }
-
-  /**
-   * 设置表单域
-   */
-  setItems = items => {
-    this.setState({
-      items,
-    });
-    return this;
   }
 
   /**

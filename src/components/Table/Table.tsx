@@ -1,6 +1,7 @@
+import moment from 'moment';
 import { Table } from 'antd';
 import * as React from 'react';
-import { TableProps } from 'antd/lib/table';
+import { TableProps, ColumnProps } from 'antd/lib/table';
 import BaseComponent from '@components/Base';
 import { ButtonProps } from 'antd/lib/button';
 import GenerateForm from '@components/GenerateForm';
@@ -9,6 +10,7 @@ import GenerateFormBtns, { IActionBtn } from '@components/GenerateForm/CreateFor
 
 import "./Table.less";
 import Modal from '@components/Modal/Modal';
+
 interface IState {
   size: number;
   page: number;
@@ -55,6 +57,9 @@ interface IProps extends TableProps<{}> {
   })[];
   actionBtns?: ITableActionBtn[]
   onDataChanged?: (tableDataSource: Array<any>, filterValues: IBaseObj) => any;
+  columns?: (ColumnProps<any> & {
+    format?: string
+  })[]
 }
 
 class BaseTable extends BaseComponent<IProps, IState>{
@@ -164,7 +169,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
             page,
             total: total,
             data: content,
-            loading: false
+            loading: false,
+            selectedRowKeys: []
           }
         })
       }
@@ -174,7 +180,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
   /**
    * 获取计算后的表格列配置
    */
-  getComputedColumns = () => {
+  getComputedColumns = ():ColumnProps<any>[] => {
     const { size, page } = this.state;
     const {
       columns,
@@ -234,7 +240,28 @@ class BaseTable extends BaseComponent<IProps, IState>{
       });
     }
 
-    return computedColumns;
+    return computedColumns.map(col => {
+      if(col.render){
+        return col;
+      }
+      const formatFunc = (text, f) => text ? moment(text).format(f) : ''
+      const {format, ...column} = col;
+      const formatTypeFunc = [{
+        type: 'date',
+        format: text => formatFunc(text, 'YYYY-MM-DD')
+      }, {
+        type: 'datetime',
+        format: text => formatFunc(text, 'YYYY-MM-DD HH:mm:ss')
+      }]
+      const findType = formatTypeFunc.find(t => t.type === format);
+      if(format){
+          return {
+            ...column,
+            render: findType ? findType.format : (text => formatFunc(text, format))
+          }
+      }
+      return column;
+    });
   }
 
   /**

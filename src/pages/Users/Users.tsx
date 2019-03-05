@@ -24,6 +24,9 @@ const generateValidator = key => {
     if (!form) {
       return cb();
     }
+    if(!value || !form.getFieldValue(key)){
+      return cb();
+    }
     if (value !== form.getFieldValue(key)) {
       cb('两次输入密码不一致');
       return;
@@ -37,6 +40,10 @@ const generateValidator = key => {
 
 class Tables extends BaseComponent<{}, {}>{
 
+  state = {
+    type: 'text'
+  }
+
   table = null;
 
   columns = [{
@@ -47,47 +54,63 @@ class Tables extends BaseComponent<{}, {}>{
     title: '创建时间',
     dataIndex: 'createdAt',
     key: 'createdAt',
+    format: 'datetime'
   }]
 
-  addUserList = [{
-    label: '用户名',
-    dataKey: 'name',
-    type: 'Input',
-    placeholder: '请输入...',
-    required: true,
-  }, {
-    label: '密码',
-    dataKey: 'password',
-    type: 'Input',
-    placeholder: '请输入密码',
-    required: true,
-    componentProps: {
-      type: 'password'
-    },
-    rules: [{
-      validator: generateValidator('repeatPwd')
+  getAddUserList = () => {
+    return [{
+      label: '用户名',
+      dataKey: 'name',
+      type: 'Input',
+      placeholder: '请输入...',
+      required: true,
+    }, {
+      label: '密码',
+      dataKey: 'password',
+      type: 'Input',
+      placeholder: '请输入密码',
+      required: true,
+      componentProps: {
+        type: this.state.type,
+        autoComplete: "off",
+        onFocus: () => {
+          this.setState({
+            type: 'password'
+          })
+        }
+      },
+      rules: [{
+        validator: generateValidator('repeatPwd')
+      }]
+    }, {
+      label: '重复密码',
+      dataKey: 'repeatPwd',
+      type: 'Input',
+      placeholder: '请输入密码',
+      required: true,
+      componentProps: {
+        type: this.state.type,
+        autoComplete: "off",
+        onFocus: () => {
+          this.setState({
+            type: 'password'
+          })
+        }
+      },
+      rules: [{
+        validator: generateValidator('password')
+      }]
     }]
-  }, {
-    label: '重复密码',
-    dataKey: 'repeatPwd',
-    type: 'Input',
-    placeholder: '请输入密码',
-    required: true,
-    componentProps: {
-      type: 'password'
-    },
-    rules: [{
-      validator: generateValidator('password')
-    }]
-  }]
+  }
 
   /**
    * 添加新用户
    */
   handleAddNewUser = async () => {
-    ModalForm.setItems(this.addUserList).show({
+    ModalForm.show({
       title: '新增用户',
       cols: 1,
+      items: this.getAddUserList()
     }, async (values, close) => {
       const res = await this.$Post('/user/add', {
         name: values.name,
@@ -106,14 +129,15 @@ class Tables extends BaseComponent<{}, {}>{
    * @param user User
    */
   handleEditUser = async (current) => {
-    ModalForm.setItems(this.addUserList.map(user => {
-      return {
-        ...user,
-        initialValue: current[user.dataKey]
-      }
-    })).show({
+    ModalForm.show({
       title: '编辑用户',
       cols: 1,
+      items: this.getAddUserList().map(user => {
+        return {
+          ...user,
+          initialValue: current[user.dataKey]
+        }
+      })
     }, async (values, close) => {
       const res = await this.$Post('/user/add', {
         name: values.name,

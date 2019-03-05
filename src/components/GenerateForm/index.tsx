@@ -165,7 +165,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       }
       if (type === 'RangePicker' && values[key]) {
         if (!get(currentItem, 'componentProps.showTime')) {
-          clonedValues[key] = values[key].map(time => `${time.format('YYYY-MM-DD')} 00:00:00`);
+          clonedValues[key] = values[key].map((time, idx) => `${time.format('YYYY-MM-DD')} ${idx === 0 ? '00:00:00' : '23:59:59'}`);
         }
       }
     });
