@@ -126,6 +126,9 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
     return item && typeof (item as IFormItemProps)['dataKey'] !== 'undefined'
   }
 
+  /**
+   * 获取并格式化表单数据
+   */
   getFormFieldsValue = async () => {
     const { items } = this.props;
     const values = await this.$getFormValue(this.props.form);
