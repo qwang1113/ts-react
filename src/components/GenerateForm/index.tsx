@@ -1,21 +1,22 @@
-import * as React from 'react';
 import {
   Form,
 } from 'antd';
+import moment from 'moment';
+import * as React from 'react';
 import { isEmpty, get } from 'lodash';
 
 import {
+  FormProps,
   FormComponentProps,
-  FormProps
 } from 'antd/lib/form/Form';
-import { ButtonProps } from 'antd/lib/button';
 import CreateElement, {
   IFormItemProps
 } from './createElement';
-import './index.less';
-import GenerateFormBtns from './CreateFormBtns';
 import BaseComponent from '@components/Base';
+import { ButtonProps } from 'antd/lib/button';
+import GenerateFormBtns from './CreateFormBtns';
 
+import './index.less';
 interface IFormSubmitButton {
   text: string;
 }
@@ -125,12 +126,8 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
     return item && typeof (item as IFormItemProps)['dataKey'] !== 'undefined'
   }
 
-  /**
-   * 处理表单提交
-   */
-  handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { items, onFormSubmit } = this.props;
+  getFormFieldsValue = async () => {
+    const { items } = this.props;
     const values = await this.$getFormValue(this.props.form);
     let clonedValues: IBaseObj = Object.assign({}, values);
     Object.keys(values).forEach(key => {
@@ -158,8 +155,27 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
           })
         }
       }
+      if (type === 'DatePicker' && values[key]) {
+        if (!get(currentItem, 'componentProps.showTime')) {
+          clonedValues[key] = moment(`${values[key].format('YYYY-MM-DD')} 00:00:00`)
+        }
+      }
+      if (type === 'RangePicker' && values[key]) {
+        if (!get(currentItem, 'componentProps.showTime')) {
+          clonedValues[key] = values[key].map(time => `${time.format('YYYY-MM-DD')} 00:00:00`);
+        }
+      }
     });
-    onFormSubmit && onFormSubmit(clonedValues);
+    return clonedValues;
+  }
+
+  /**
+   * 处理表单提交
+   */
+  handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { onFormSubmit } = this.props;
+    onFormSubmit && onFormSubmit(this.getFormFieldsValue());
   }
 
   render() {

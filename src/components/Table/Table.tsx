@@ -76,6 +76,8 @@ class BaseTable extends BaseComponent<IProps, IState>{
 
   form = null;
 
+  formRef = null;
+
   componentDidMount() {
     const { dataOptions, dataSource } = this.props;
     // 获取缓存的size
@@ -146,7 +148,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     }, async () => {
       let filterValues = {};
       if (hasFilter) {
-        filterValues = await this.$getFormValue(this.form);
+        filterValues = await this.formRef.getFormFieldsValue();
       }
       const res = await this.$Post(url, {
         ...params,
@@ -159,7 +161,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
         onDataChanged && onDataChanged(content, filterValues);
         this.setState(({ page }) => {
           return {
-            page: total === content.length ? page : page + 1,
+            page,
             total: total,
             data: content,
             loading: false
@@ -444,6 +446,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
                   onClick: this.resetFilter.bind(this)
                 }]}
                 getForm={form => this.form = form}
+                wrappedComponentRef={ref => this.formRef = ref}
               />
             </div>
           )
@@ -464,7 +467,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
             current: page + 1,
             pageSize: size,
             showTotal: total => `共 ${total} 条`,
-            pageSizeOptions: ['10', '20', '40',],
+            pageSizeOptions: ['3', '10', '20', '40',],
             size: 'small',
             showSizeChanger: true,
             onChange: this.changePage,

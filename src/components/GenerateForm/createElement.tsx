@@ -57,11 +57,11 @@ export interface ISelectOption {
 
 export interface IFormItemProps extends IFormItemBase {
   placeholder?: string;
-  componentProps?: object; // 表单组件的props
+  componentProps?: IBaseObj; // 表单组件的props
   labelOptions?: FormItemProps; // formItem的props
   options?: string | ISelectOption[]; // select, radioGroup, Checkbox 的options list
   validateOption?: GetFieldDecoratorOptions; // getFieldDecorator 第二个参数
-  params?: object;
+  params?: IBaseObj;
   labelKey?: string
   valueKey?: string
   childrenKey?: string
