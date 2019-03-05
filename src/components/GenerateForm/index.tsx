@@ -22,7 +22,7 @@ interface IFormSubmitButton {
 
 interface IFormProps extends FormProps {
   cols?: 1 | 2 | 3 | 4; // 表单元素分几列展示
-  items: (IFormItemProps | JSX.Element)[];
+  items: IFormItemProps[];
   btnContainerClassName?: string
   btnContainerStyle?: React.StyleHTMLAttributes<any>
   btns?: (IFormSubmitButton & ButtonProps)[]
@@ -65,6 +65,12 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
     let { initialValue } = item;
     let valuePropName;
     const computedRules = rules;
+    if (['Input', 'TextArea'].find(item => item === type)) {
+      computedRules.push({
+        whitespace: true,
+        message: this.generatePlaceholder(item)
+      });
+    }
     switch (type) {
       case 'Switch':
         valuePropName = 'checked';
@@ -87,6 +93,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
     return {
       initialValue,
       valuePropName,
+      validateFirst: true,
       rules: computedRules,
       ...validateOption
     };
@@ -165,7 +172,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       btnContainerClassName,
       form, // 排除(antd报错)
       getForm, // 排除(这个属性本身已经使用了, 不能透传到下面)
-      onSubmit, // 需要自动处理submit
+      onSubmit, // 排除(需要自动处理submit)
       onFormSubmit, // 排除
       ...formProps
     } = this.props;

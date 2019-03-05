@@ -118,7 +118,7 @@ class Home extends BaseComponent<{}, {}>{
               type: 'TextArea',
               required: true,
               initialValue: '我是文本域'
-            }, 
+            },
             <Title text="自定义组件" />,
             {
               type: 'Custom',
@@ -127,12 +127,12 @@ class Home extends BaseComponent<{}, {}>{
               initialValue: '这是自定义组件初始值',
               component: (value, onChange) => {
                 return (
-                  <input 
-                    type="text" 
-                    value={value} 
+                  <input
+                    type="text"
+                    value={value}
                     onChange={(e) => {
                       onChange(e.target.value);
-                    }} 
+                    }}
                   />
                 )
               }

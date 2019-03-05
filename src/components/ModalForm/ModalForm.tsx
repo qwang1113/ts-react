@@ -3,14 +3,21 @@ import BaseComponent from '@components/Base';
 import { Modal } from 'antd';
 import * as React from 'react';
 import GenerateForm from '@components/GenerateForm';
+import { FormComponentProps } from 'antd/lib/form';
 
 import "./index.less";
+import { ModalProps } from 'antd/lib/modal';
+
+interface IShowParams extends ModalProps {
+  cols?: 1 | 2 | 3 | 4
+}
 
 class ModalForm extends BaseComponent {
 
-  form = null;
+  form: FormComponentProps["form"]
 
   state = {
+    cols: 2,
     items: [],
     modalProps: {
       title: "",
@@ -22,19 +29,21 @@ class ModalForm extends BaseComponent {
   }
 
   callback = undefined;
+  getForm = undefined;
 
   /**
    * 显示modal
    */
-  show = (obj = {}, cb) => {
-    const callback = typeof obj === 'function' ? obj : cb;
+  show = (obj: IShowParams, cb: Function) => {
+    const { cols, ...config } = obj;
     this.setState({
+      cols: cols || 2,
       modalProps: {
-        ...obj,
+        ...config,
         visible: true,
       },
     });
-    this.callback = callback;
+    this.callback = cb;
   }
 
   /**
@@ -72,7 +81,7 @@ class ModalForm extends BaseComponent {
   }
 
   render() {
-    const { items, modalProps, } = this.state;
+    const { items, modalProps, cols } = this.state;
     return (
       <Modal
         className="app-modal-form"
@@ -83,7 +92,7 @@ class ModalForm extends BaseComponent {
         <GenerateForm
           items={items}
           getForm={form => this.form = form}
-          cols={2}
+          cols={cols}
         />
       </Modal>
     );

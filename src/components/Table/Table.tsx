@@ -15,7 +15,6 @@ interface IState {
   total: number;
   data: IBaseObj[];
   loading: boolean;
-  deleteBtnLoading: boolean;
   selectedRowKeys: Array<number>
 }
 
@@ -73,7 +72,6 @@ class BaseTable extends BaseComponent<IProps, IState>{
     data: [],
     loading: false,
     selectedRowKeys: [], // 表格已经选择的列
-    deleteBtnLoading: false,
   }
 
   form = null;
@@ -308,9 +306,6 @@ class BaseTable extends BaseComponent<IProps, IState>{
     const { selectedRowKeys } = this.state;
     const hasId = typeof id === 'number';
     const { url: deleteUrl, params: deleteParams } = deleteOption;
-    hasId && this.setState({
-      deleteBtnLoading: true,
-    });
     try {
       await Modal.comfirm({
         title: '提示',
@@ -326,17 +321,13 @@ class BaseTable extends BaseComponent<IProps, IState>{
         }, this.fetchData);
       }
     } catch (error) { }
-    hasId && this.setState({
-      deleteBtnLoading: false
-    });
-
   }
 
   /**
    * 生成选择之后的自定义按钮, 可根据传入的deleteUrl生成默认的删除按钮以及方法
    */
   generateTableBtns() {
-    const { selectedRowKeys, deleteBtnLoading } = this.state;
+    const { selectedRowKeys } = this.state;
     const { btns, deleteOption } = this.props;
     const { batch: batchDelete, url: deleteUrl } = deleteOption;
     const hasSelected = selectedRowKeys.length > 0;
@@ -363,7 +354,6 @@ class BaseTable extends BaseComponent<IProps, IState>{
         disabled: !hasSelected,
         text: '删除',
         onClick: this.handleDeleteRows,
-        loading: deleteBtnLoading
       });
     }
 
