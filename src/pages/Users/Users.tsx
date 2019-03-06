@@ -71,13 +71,8 @@ class Tables extends BaseComponent<{}, {}>{
       placeholder: '请输入密码',
       required: true,
       componentProps: {
-        type: this.state.type,
+        type: 'password',
         autoComplete: "off",
-        onFocus: () => {
-          this.setState({
-            type: 'password'
-          })
-        }
       },
       rules: [{
         validator: generateValidator('repeatPwd')
@@ -89,13 +84,8 @@ class Tables extends BaseComponent<{}, {}>{
       placeholder: '请输入密码',
       required: true,
       componentProps: {
-        type: this.state.type,
+        type: 'password',
         autoComplete: "off",
-        onFocus: () => {
-          this.setState({
-            type: 'password'
-          })
-        }
       },
       rules: [{
         validator: generateValidator('password')
