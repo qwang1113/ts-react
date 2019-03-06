@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
 import * as React from 'react';
 import { configure } from 'mobx';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
-import 'dayjs/locale/zh-cn' // 按需加载
 import createHashHistory from 'history/createHashHistory';
 import { syncHistoryWithStore, SynchronizedHistory } from 'mobx-react-router';
 import { Router } from 'react-router-dom';
