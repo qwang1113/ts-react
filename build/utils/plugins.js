@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 const constants = require('./constants')
@@ -21,9 +20,6 @@ for (let key in oriEnv) {
 
 const basePlugins = [
   new webpack.DefinePlugin(defineEnv),
-  new MomentLocalesPlugin({
-    localesToKeep: ['es-us', 'zh-cn']
-  })
 ]
 
 const devPlugins = [

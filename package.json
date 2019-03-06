@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "antd": "git+http://qwang1113:deploy@28ty.cn:10080/qwang1113/antd-adaptive.git",
+    "dayjs": "^1.8.8",
     "history": "^4.7.2",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.11",
@@ -21,7 +22,6 @@
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "mobx-react-router": "^4.0.5",
-    "moment": "^2.24.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-router-dom": "^4.3.1"
@@ -44,7 +44,6 @@
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.5.0",
-    "moment-locales-webpack-plugin": "^1.0.7",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-loader": "^3.0.0",
     "react-hot-loader": "^4.6.5",

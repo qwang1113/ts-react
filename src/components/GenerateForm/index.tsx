@@ -1,7 +1,7 @@
 import {
   Form,
 } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import * as React from 'react';
 import { isEmpty, get } from 'lodash';
 
@@ -160,12 +160,12 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       }
       if (type === 'DatePicker' && values[key]) {
         if (!get(currentItem, 'componentProps.showTime')) {
-          clonedValues[key] = moment(`${values[key].format('YYYY-MM-DD')} 00:00:00`)
+          clonedValues[key] = dayjs(`${values[key].format('YYYY-MM-DD')} 00:00:00`)
         }
       }
       if (type === 'RangePicker' && values[key]) {
         if (!get(currentItem, 'componentProps.showTime')) {
-          clonedValues[key] = values[key].map((time, idx) => `${time.format('YYYY-MM-DD')} ${idx === 0 ? '00:00:00' : '23:59:59'}`);
+          clonedValues[key] = values[key].map((time, idx) => dayjs(`${time.format('YYYY-MM-DD')} ${idx === 0 ? '00:00:00' : '23:59:59'}`));
         }
       }
     });
@@ -177,8 +177,9 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
    */
   handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const values = await this.getFormFieldsValue();
     const { onFormSubmit } = this.props;
-    onFormSubmit && onFormSubmit(this.getFormFieldsValue());
+    onFormSubmit && onFormSubmit(values);
   }
 
   render() {

@@ -1,7 +1,9 @@
+import dayjs from 'dayjs';
 import * as React from 'react';
 import { configure } from 'mobx';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
+import 'dayjs/locale/zh-cn' // 按需加载
 import createHashHistory from 'history/createHashHistory';
 import { syncHistoryWithStore, SynchronizedHistory } from 'mobx-react-router';
 import { Router } from 'react-router-dom';
@@ -11,6 +13,7 @@ import App from '@components/App';
 import './index.less';
 
 configure({ enforceActions: 'observed' });
+dayjs.locale('zh-cn') // 国际化
 
 const hashHistory = createHashHistory();
 const history: SynchronizedHistory & any = syncHistoryWithStore(hashHistory, store.routerStore);

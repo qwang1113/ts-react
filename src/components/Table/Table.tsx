@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Table } from 'antd';
 import * as React from 'react';
 import { TableProps, ColumnProps } from 'antd/lib/table';
@@ -244,7 +244,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
       if(col.render){
         return col;
       }
-      const formatFunc = (text, f) => text ? moment(text).format(f) : ''
+      const formatFunc = (text, f) => text ? dayjs(text).format(f) : ''
       const {format, ...column} = col;
       const formatTypeFunc = [{
         type: 'date',
