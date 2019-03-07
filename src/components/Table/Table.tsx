@@ -47,10 +47,15 @@ interface IDataOptions {
   params?: object;
 }
 
+interface ISelectText {
+  (rows: number[]): string | JSX.Element
+}
+
 interface IProps extends TableProps<{}> {
   deleteOption?: IDeleteOption
   dataOptions?: IDataOptions;
   showIndex?: boolean; // 是否显示索引列
+  selectText?: ISelectText;
   btns?: (IActionBtn & ButtonProps & {
     withSelect?: boolean;
     onClick?: (any) => any
@@ -180,7 +185,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
   /**
    * 获取计算后的表格列配置
    */
-  getComputedColumns = ():ColumnProps<any>[] => {
+  getComputedColumns = (): ColumnProps<any>[] => {
     const { size, page } = this.state;
     const {
       columns,
@@ -217,7 +222,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
           let computedActionBtns = [...actionBtns];
           if (deleteUrl && !actionBtns.find(btn => btn.type === 'delete')) {
             computedActionBtns.push({
-              disabled, 
+              disabled,
               visiable,
               text: '删除',
               type: 'delete',
@@ -241,11 +246,11 @@ class BaseTable extends BaseComponent<IProps, IState>{
     }
 
     return computedColumns.map(col => {
-      if(col.render){
+      if (col.render) {
         return col;
       }
       const formatFunc = (text, f) => text ? dayjs(text).format(f) : ''
-      const {format, ...column} = col;
+      const { format, ...column } = col;
       const formatTypeFunc = [{
         type: 'date',
         format: text => formatFunc(text, 'YYYY-MM-DD')
@@ -254,11 +259,11 @@ class BaseTable extends BaseComponent<IProps, IState>{
         format: text => formatFunc(text, 'YYYY-MM-DD HH:mm:ss')
       }]
       const findType = formatTypeFunc.find(t => t.type === format);
-      if(format){
-          return {
-            ...column,
-            render: findType ? findType.format : (text => formatFunc(text, format))
-          }
+      if (format) {
+        return {
+          ...column,
+          render: findType ? findType.format : (text => formatFunc(text, format))
+        }
       }
       return column;
     });
@@ -357,7 +362,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
    */
   generateTableBtns() {
     const { selectedRowKeys } = this.state;
-    const { btns, deleteOption } = this.props;
+    const { btns, deleteOption, selectText } = this.props;
     const { batch: batchDelete, url: deleteUrl } = deleteOption;
     const hasSelected = selectedRowKeys.length > 0;
     const isNeedShowSelect = !!btns.find(({ withSelect }) => !!withSelect) || deleteUrl;
@@ -401,7 +406,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
             {
               isNeedShowSelect && hasSelected && (
                 <span style={{ marginLeft: 8 }}>
-                  {`已选 ${selectedRowKeys.length} 项`}
+                  {selectText ? selectText(selectedRowKeys) : `已选 ${selectedRowKeys.length} 项`}
                 </span>
               )
             }

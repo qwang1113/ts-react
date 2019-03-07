@@ -35,11 +35,10 @@ class Sider extends React.Component<IStoreProps> {
         collapsed={sideBarCollapsed}
       >
         <div className={`logoBox ${sideBarTheme}`}>
+          <Icon type="ant-design" style={{ fontSize: 30 }} />
           {
-            sideBarCollapsed ? (
-              <Icon type="ant-design" style={{fontSize: 30}}/>
-            ) : (
-              <span style={{ fontSize: 16 }}>React 基础框架</span>
+            !sideBarCollapsed && (
+              <span className="logo-text">React 基础框架</span>
             )
           }
         </div>

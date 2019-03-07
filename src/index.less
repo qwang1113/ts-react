@@ -1,15 +1,56 @@
 @import './assets/less/base.less';
 
-html, body, #app, #app .appWrapper{
+html,
+body,
+#app,
+#app .appWrapper {
   min-height: 100vh;
 }
 
-.app-container{
+// 去除浏览器默认填充黄色背景
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px white inset;
+}
+
+/*定义滚动条高宽及背景*/
+*::-webkit-scrollbar {
+  display: block;
+  width: 2px;
+  height: 2px;
+}
+
+/*定义滚动条*/
+*::-webkit-scrollbar-thumb {
+  background-color: @main-color;
+  border-radius: 4px;
+}
+
+.ant-layout-sider{
+  &:not(.ant-layout-sider-collapsed) {
+    flex: 0 0 2.6rem !important;
+    max-width: 2.6rem !important;
+    min-width: 2.6rem !important;
+    width: 2.6rem !important;
+  }
+  &.ant-layout-sider-collapsed{
+    flex: 0 0 .8rem !important;
+    max-width: .8rem !important;
+    min-width: .8rem !important;
+    width: .8rem !important;
+  }
+  .ant-menu{
+    width: 100%;
+    padding-top: .2rem;
+  }
+}
+
+.app-container {
   background-color: #fff;
   padding: 0.15rem;
 }
 
-.app-title{
+.app-title {
   display: flex;
   width: 100%;
   align-items: center;
@@ -18,7 +59,8 @@ html, body, #app, #app .appWrapper{
   margin: 0.24rem 0;
   font-size: 0.16rem;
   color: @dark-color;
-  &:before{
+
+  &:before {
     content: '';
     display: block;
     width: 0.04rem;

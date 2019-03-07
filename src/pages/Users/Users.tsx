@@ -72,7 +72,7 @@ class Tables extends BaseComponent<{}, {}>{
       required: true,
       componentProps: {
         type: 'password',
-        autoComplete: "off",
+        autoComplete: "new-password",
       },
       rules: [{
         validator: generateValidator('repeatPwd')
@@ -85,7 +85,7 @@ class Tables extends BaseComponent<{}, {}>{
       required: true,
       componentProps: {
         type: 'password',
-        autoComplete: "off",
+        autoComplete: "new-password",
       },
       rules: [{
         validator: generateValidator('password')
@@ -176,6 +176,9 @@ class Tables extends BaseComponent<{}, {}>{
             onClick: this.handleEditUser
           }]}
           columns={this.columns}
+          selectText={(rows) => {
+            return `已选: ${rows.length}项`
+          }}
           // onDataChanged={(data, filter) => {
           //   console.log(data, filter);
           // }}

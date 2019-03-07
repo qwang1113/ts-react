@@ -3,9 +3,36 @@ import Title from '@components/Title/Title';
 import BaseComponent from '@components/Base';
 import GenerateForm from '@components/GenerateForm';
 
+import ModalForm from '@components/ModalForm/ModalForm';
+
+
 class Home extends BaseComponent<{}, {}>{
 
   form = null;
+
+  componentDidMount() {
+    ModalForm.show({
+      title: '测试',
+      items: [
+        <Title text="普通表单" />
+        , {
+          label: '普通输入框',
+          dataKey: 'Input',
+          type: 'Input',
+          placeholder: '请输入',
+          required: true
+        }, {
+          label: '普通输入框(禁用)',
+          dataKey: 'disableInput',
+          type: 'Input',
+          placeholder: '请输入',
+          componentProps: {
+            disabled: true
+          }
+        },
+      ]
+    })
+  }
 
   render() {
     return (
