@@ -5,6 +5,7 @@ export const PublicHome = lazy(() => import( /* webpackChunkName: "PublicHome" *
 export const NotFound = lazy(() => import( /* webpackChunkName: "NotFound" */ '@components/NotFound'));
 export const Users = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Users/Users'))
 export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
+export const Normal = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Forms/Normal'))
 
 export interface IMenu {
   title: string;
@@ -28,6 +29,17 @@ export const menu: IMenu[] = [
     title: '用户管理',
     icon: 'user',
     component: Users
+  },
+  {
+    path: '/forms',
+    title: '表单',
+    icon: 'user',
+    children: [{
+      path: '/normal',
+      title: '普通输入框',
+      icon: 'user',
+      component: Normal
+    }]
   },
 ];
 

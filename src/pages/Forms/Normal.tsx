@@ -1,0 +1,53 @@
+import * as React from 'react';
+import Title from '@components/Title/Title';
+import BaseComponent from '@components/Base';
+import GenerateForm from '@components/GenerateForm';
+
+
+export default class Normal extends BaseComponent {
+  render() {
+    return (
+      <div>
+        <GenerateForm
+          cols={2}
+          className="app-container"
+          btns={[{
+            text: '确定',
+            type: 'primary',
+            htmlType: 'submit'
+          }, {
+            text: '取消',
+          }]}
+          items={[
+            <Title text="普通表单" />
+            , {
+              label: '普通输入框',
+              dataKey: 'Input',
+              type: 'Input',
+              placeholder: '请输入',
+              required: true
+            }, {
+              label: '普通输入框(禁用)',
+              dataKey: 'disableInput',
+              type: 'Input',
+              placeholder: '请输入',
+              componentProps: {
+                disabled: true
+              }
+            },
+            {
+              label: '密码输入',
+              dataKey: 'disableInput',
+              type: 'Input',
+              placeholder: '请输入',
+              componentProps: {
+                type: 'password'
+              }
+            },
+            null
+          ]}
+        />
+      </div>
+    )
+  }
+}
