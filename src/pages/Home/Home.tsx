@@ -41,7 +41,7 @@ class Home extends BaseComponent<{}, {}>{
           cols={2}
           className="app-container"
           getForm={form => this.form = form}
-          onFormSubmit={val => console.log(val)}
+          onSubmit={val => console.log(val)}
           btns={[{
             text: '确定',
             type: 'primary',

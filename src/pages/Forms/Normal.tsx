@@ -5,6 +5,11 @@ import GenerateForm from '@components/GenerateForm';
 
 
 export default class Normal extends BaseComponent {
+
+  handleSubmit = (e) => {
+    console.log(e);
+  }
+
   render() {
     return (
       <div>
@@ -18,6 +23,7 @@ export default class Normal extends BaseComponent {
           }, {
             text: '取消',
           }]}
+          onSubmit={this.handleSubmit}
           items={[
             <Title text="普通表单" />
             , {
@@ -37,7 +43,7 @@ export default class Normal extends BaseComponent {
             },
             {
               label: '密码输入',
-              dataKey: 'disableInput',
+              dataKey: 'disableInput1',
               type: 'Input',
               placeholder: '请输入',
               componentProps: {

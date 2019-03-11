@@ -28,7 +28,7 @@ interface IFormProps extends FormProps {
   btnContainerStyle?: React.StyleHTMLAttributes<any>
   btns?: (IFormSubmitButton & ButtonProps)[]
   getForm?: (form: any) => any
-  onFormSubmit?: (formFields: any) => any
+  onSubmit?: (IBaseObj) => any
 }
 
 class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
@@ -178,8 +178,8 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
   handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const values = await this.getFormFieldsValue();
-    const { onFormSubmit } = this.props;
-    onFormSubmit && onFormSubmit(values);
+    const { onSubmit } = this.props;
+    onSubmit && onSubmit(values);
   }
 
   render() {
@@ -193,7 +193,6 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       form, // 排除(antd报错)
       getForm, // 排除(这个属性本身已经使用了, 不能透传到下面)
       onSubmit, // 排除(需要自动处理submit)
-      onFormSubmit, // 排除
       ...formProps
     } = this.props;
     const { form: { getFieldDecorator } } = this.props;

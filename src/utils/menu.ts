@@ -6,6 +6,7 @@ export const NotFound = lazy(() => import( /* webpackChunkName: "NotFound" */ '@
 export const Users = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Users/Users'))
 export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
 export const Normal = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Forms/Normal'))
+export const Tables = lazy(() => import( /* webpackChunkName: "Tables" */ '@pages/Tables/Tables'))
 
 export interface IMenu {
   title: string;
@@ -29,6 +30,12 @@ export const menu: IMenu[] = [
     title: '用户管理',
     icon: 'user',
     component: Users
+  },
+  {
+    path: '/tables',
+    title: '数据表管理',
+    icon: 'user',
+    component: Tables
   },
   {
     path: '/forms',

@@ -11,7 +11,6 @@ const headers = {
 };
 
 const generate = async response => {
-  message.destroy();
   const res = await response;
   let result;
   try {
@@ -23,8 +22,10 @@ const generate = async response => {
     message.error('网络异常');
     return null;
   }
+  message.destroy();
   switch (res.status) {
     case 200:
+    case 204:
       return result || {};
     case 403:
       Cookie.remove('token');
