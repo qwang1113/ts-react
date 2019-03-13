@@ -29,8 +29,8 @@ class Tables extends BaseComponent<{}, {}>{
     key: 'description',
   }, {
     title: '备注',
-    dataIndex: 'remark',
-    key: 'remark',
+    dataIndex: 'comment',
+    key: 'comment',
   }, {
     title: '创建时间',
     dataIndex: 'createdAt',
