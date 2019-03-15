@@ -73,6 +73,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     showIndex: false,
     dataOptions: {},
     deleteOption: {},
+    btns: []
   }
 
   state = {

@@ -1,7 +1,18 @@
 .app-modal-form {
   .ant-modal-body {
+    .app-title{
+      margin-top: 0;
+    }
     .form-content {
       padding: 0;
+      &.col-1{
+        .ant-form-item{
+          width: 100%;
+          .ant-form-item-control-wrapper{
+            max-width: none;
+          }
+        }
+      }
       &.col-2 {
         .ant-form-item {
           &:nth-child(2n -1) {
