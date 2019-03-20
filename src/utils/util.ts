@@ -1,4 +1,6 @@
+import { get } from 'lodash';
 import { IMenu } from './menu';
+import { IFormItemProps } from '@components/GenerateForm/createElement';
 
 /**
  * 检查storage
@@ -120,4 +122,45 @@ export function getRoutesByPath(pathName: string, menus: IMenu[]) {
   };
   getExactRoute(pathArr, menus);
   return routes;
+}
+
+/**
+ * 将表单配置与数据值绑定
+ * @param schema schema列表
+ * @param data 需要bind的数据
+ */
+export const bindInitialValueWithSchema = (
+  schemaList: IFormItemProps[],
+  data: IBaseObj,
+  key = 'initialValue'
+) => {
+  return schemaList.map(schema => {
+    const type = schema.type;
+    const value = get(data, schema.dataKey);
+    return {
+      ...schema,
+      [key]: type === 'Input' ? (value || '') + '' : value
+    }
+  });
+}
+
+/**
+ * 生成表单隐藏项目配置
+ * @param key dataKey
+ * @param type? 组件类型
+ */
+export const generateHiddenFormItem = (
+  key: string,
+  type?: IFormItemProps['type']
+) => {
+  return {
+    label: key,
+    dataKey: key,
+    type: type || 'Input',
+    labelOptions: {
+      style: {
+        display: 'none'
+      }
+    }
+  }
 }

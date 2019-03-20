@@ -17,6 +17,7 @@ interface IState {
   total: number;
   data: IBaseObj[];
   loading: boolean;
+  shouldGetData: boolean;
   selectedRowKeys: Array<number>
 }
 
@@ -39,6 +40,7 @@ interface IDeleteOption {
   params?: object;
   disabled?: boolean | IRowFunc;
   visiable?: boolean | IRowFunc;
+  onDelete?: (selectRowKeys: number[]) => any
 }
 
 interface IDataOptions {
@@ -82,6 +84,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     total: 0,
     data: [],
     loading: false,
+    shouldGetData: false,
     selectedRowKeys: [], // 表格已经选择的列
   }
 
@@ -94,12 +97,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
     // 获取缓存的size
     const size = localStorage.getItem('tableSize') || 10;
     this.setState({ size: +size })
-    if (Array.isArray(dataSource)) {
-      this.setState({ data: dataSource });
-    } else if (dataOptions.url) {
-      this.fetchData();
-    } else {
-      console.warn('you must provide a source for this table');
+    if (!Array.isArray(dataSource) && dataOptions.url) {
+      this.setState({
+        shouldGetData: true,
+      }, this.fetchData);
     }
   }
 
@@ -338,24 +339,26 @@ class BaseTable extends BaseComponent<IProps, IState>{
    */
   handleDeleteRows = async (id) => {
     const { deleteOption } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys, shouldGetData } = this.state;
     const hasId = typeof id === 'number';
-    const { url: deleteUrl, params: deleteParams } = deleteOption;
-    try {
-      await Modal.comfirm({
-        title: '提示',
-        content: '确定删除吗?'
-      });
-      const res = await this.$Get(deleteUrl, {
-        idList: hasId ? [id] : selectedRowKeys,
-        ...deleteParams
-      });
-      if (res) {
-        this.setState({
-          selectedRowKeys: [],
-        }, this.fetchData);
-      }
-    } catch (error) { }
+    const { url: deleteUrl, params: deleteParams, onDelete } = deleteOption;
+    await Modal.comfirm({
+      title: '提示',
+      content: '确定删除吗?'
+    });
+    const res = await this.$Get(deleteUrl, {
+      idList: hasId ? [id] : selectedRowKeys,
+      ...deleteParams
+    });
+    if (res) {
+      this.setState({
+        selectedRowKeys: [],
+      },
+        shouldGetData
+          ? this.fetchData
+          : () => onDelete && onDelete(selectedRowKeys)
+      );
+    }
   }
 
   /**
@@ -428,7 +431,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
     } = this.state;
     const {
       columns,
-      className,
+      className = '',
       btns,
       style,
       deleteOption,
@@ -494,7 +497,7 @@ class BaseTable extends BaseComponent<IProps, IState>{
           rowKey={rowKeyFunc}
           rowSelection={rowSelection}
           columns={this.getComputedColumns()}
-          className={`app-base-table`}
+          className="app-base-table"
           pagination={{
             total,
             current: page + 1,

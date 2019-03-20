@@ -218,15 +218,21 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
                 </Form.Item>
               )
             }
-            return (item === null || item === undefined) ? (
-              <div className="ant-form-item" key={idx} >
-                {item}
-              </div>
-            ) : (
-                <React.Fragment key={idx}>
+            if (item === undefined) {
+              return item;
+            }
+            if (item === null) {
+              return (
+                <div className="ant-form-item" key={idx} >
                   {item}
-                </React.Fragment>
-              );
+                </div>
+              )
+            }
+            return (
+              <React.Fragment key={idx}>
+                {item}
+              </React.Fragment>
+            )
           })
         }
         {

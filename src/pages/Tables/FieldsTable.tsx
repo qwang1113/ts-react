@@ -4,8 +4,10 @@ import BaseComponent from '@components/Base';
 import Table from '@components/Table/Table';
 import ModalForm from '@components/ModalForm/ModalForm';
 import { TableProps } from 'antd/lib/table';
+import { FieldsCols, GenerateAddOrEditFieldSchema } from './schema';
+import { bindInitialValueWithSchema } from '@utils/util';
 
-interface IProps extends TableProps<any>{
+interface IProps extends TableProps<any> {
   tableId: string
 }
 
@@ -13,64 +15,17 @@ class FieldsTable extends BaseComponent<IProps, {}>{
 
   table = null;
 
-  columns = [{
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-  }, {
-    title: '字段类型',
-    dataIndex: 'type',
-    key: 'type',
-  }, {
-    title: '描述',
-    dataIndex: 'description',
-    key: 'description',
-  }, {
-    title: '备注',
-    dataIndex: 'comment',
-    key: 'comment',
-  }, {
-    title: '创建时间',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    format: 'datetime'
-  }]
-
-  addOrEditTable = (row: any) => {
-    const id = row.id;
+  editField = (row: any) => {
+    const { tableId } = this.props;
     ModalForm.show({
       cols: 1,
-      items: [{
-        label: '名称',
-        dataKey: 'name',
-        type: 'Input',
-        required: true,
-        initialValue: row.name,
-      }, {
-        label: '数据表描述',
-        dataKey: 'description',
-        required: true,
-        type: 'Input',
-        initialValue: row.description,
-      }, {
-        label: '备注',
-        dataKey: 'comment',
-        type: 'Input',
-        initialValue: row.comment,
-      }, {
-        label: 'id',
-        dataKey: 'id',
-        type: 'Input',
-        initialValue: id + '',
-        labelOptions: {
-          style: {
-            display: 'none'
-          }
-        }
-      }],
+      items: bindInitialValueWithSchema(
+        GenerateAddOrEditFieldSchema(tableId, row.id),
+        row
+      ),
       title: '编辑字段'
     }, async (values, close) => {
-      const res = await this.$Post('/table/add', values);
+      const res = await this.$Post('/field/add', values);
       if (res) {
         this.table.fetchData();
         close();
@@ -78,21 +33,33 @@ class FieldsTable extends BaseComponent<IProps, {}>{
     });
   }
 
+  fetchData = () => this.table && this.table.fetchData()
+
   render() {
-    const { dataSource } = this.props;
+    const { tableId } = this.props;
     return (
-      <div className="tables-container">
-        <Table
-          showIndex
-          dataSource={dataSource}
-          actionBtns={[{
-            text: '编辑',
-            type: 'edit',
-            onClick: this.addOrEditTable
-          }]}
-          columns={this.columns}
-        />
-      </div>
+      <Table
+        showIndex
+        dataOptions={{
+          url: '/fields',
+          params: {
+            tableId
+          }
+        }}
+        deleteOption={{
+          batch: true,
+          url: '/field/delete',
+        }}
+        actionBtns={[{
+          text: '编辑',
+          type: 'edit',
+          onClick: this.editField
+        }]}
+        columns={FieldsCols}
+        pagination={false}
+        style={{ paddingTop: 0 }}
+        ref={ref => this.table = ref}
+      />
     );
   }
 }
