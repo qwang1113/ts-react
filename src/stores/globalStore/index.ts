@@ -24,7 +24,7 @@ export class GlobalStore {
    */
   @observable
   sideBarTheme: IGlobalStore.SideBarTheme = (
-    (localStorage.getItem(LOCALSTORAGE_KEYS.SIDE_BAR_THEME) as IGlobalStore.SideBarTheme) || 'dark'
+    (localStorage.getItem(LOCALSTORAGE_KEYS.SIDE_BAR_THEME) as IGlobalStore.SideBarTheme) || 'light'
   );
 
   /**

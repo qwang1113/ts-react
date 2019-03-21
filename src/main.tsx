@@ -33,7 +33,9 @@ render(
     recalc = () => {
       const scrollWidth = docEl.scrollWidth;
       if (!scrollWidth) { return; }
-      if (scrollWidth > 1366) {
+      if (scrollWidth > 1940) {
+        docEl.style.fontSize = '100px';
+      } else if (scrollWidth >= 1366 && scrollWidth <= 1940) {
         docEl.style.fontSize = Math.floor(100 * (scrollWidth / 1920)) + 'px';
       } else {
         docEl.style.fontSize = Math.floor(100 * (1366 / 1700)) + 'px';
