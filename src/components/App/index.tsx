@@ -1,15 +1,14 @@
 import {
   Route,
   Switch,
-  HashRouter as Router,
 } from 'react-router-dom';
 import { LocaleProvider } from 'antd';
 import React from 'react';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 
 import './index.less';
-import Loading from '@components/Loading';
-import { Login, PublicHome, NotFound } from '@utils/menu';
+import Home from '@components/Home';
+import Login from '@pages/Login/Login';
 
 const AppWrapper = props => <div className="appWrapper">{props.children}</div>;
 
@@ -17,15 +16,10 @@ const AppRouter = () => {
   return (
     <LocaleProvider locale={zhCN}>
       <AppWrapper>
-        <Router>
-          <React.Suspense fallback={<Loading />}>
-            <Switch>
-              <Route exact path="/login" component={() => <Login />} />
-              <Route path="/" component={() => <PublicHome />} />
-              <Route component={() => <NotFound />} />
-            </Switch>
-          </React.Suspense>
-        </Router>
+        <Switch>
+          <Route exact path="/login" component={() => <Login />} />
+          <Route path="/" component={() => <Home />} />
+        </Switch>
       </AppWrapper>
     </LocaleProvider>
   );

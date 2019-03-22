@@ -3,7 +3,6 @@ import {
   Switch,
   Redirect,
   Link,
-  HashRouter as Router,
 } from 'react-router-dom';
 import * as React from 'react';
 import { computed } from 'mobx';
@@ -12,6 +11,7 @@ import { hot } from 'react-hot-loader';
 import { Layout, Breadcrumb } from 'antd';
 
 import Sider from '@components/Sider';
+import Loading from '@components/Loading';
 import NotFound from '@components/NotFound';
 import Header from '@components/Header';
 import { getRoutesByPath, getSessionStorage } from '@utils/util';
@@ -42,9 +42,9 @@ class Home extends BaseComponent<IStoreProps, {}> {
 
   constructor(props) {
     super(props);
-    if (!getSessionStorage('token')) {
-      location.href = '/#/login';
-    }
+    // if (!getSessionStorage('token')) {
+    //   location.href = '/#/login';
+    // }
   }
 
   /**
@@ -113,13 +113,13 @@ class Home extends BaseComponent<IStoreProps, {}> {
               </Breadcrumb.Item>
               {this.createBreadCrumb()}
             </Breadcrumb>
-            <Router>
+            <React.Suspense fallback={<Loading />}>
               <Switch>
                 <Route exact path="/" render={() => (<Redirect to={home} />)} />
                 {this.createRoutes(menu)}
                 <Route component={() => <NotFound />} />
               </Switch>
-            </Router>
+            </React.Suspense>
           </Layout.Content>
         </Layout>
       </Layout >

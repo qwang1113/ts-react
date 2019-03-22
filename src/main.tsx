@@ -5,6 +5,8 @@ import { configure } from 'mobx';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
 import createHashHistory from 'history/createHashHistory';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
+import { LocaleProvider } from 'antd';
 import { syncHistoryWithStore, SynchronizedHistory } from 'mobx-react-router';
 import { Router } from 'react-router-dom';
 import * as store from './stores';
@@ -21,7 +23,9 @@ const history: SynchronizedHistory & any = syncHistoryWithStore(hashHistory, sto
 render(
   <Provider {...store}>
     <Router history={history}>
-      <App />
+      <LocaleProvider locale={zhCN}>
+        <App />
+      </LocaleProvider>
     </Router>
   </Provider>,
   document.getElementById('app')
