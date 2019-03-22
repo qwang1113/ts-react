@@ -6,21 +6,6 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const constants = require('./constants')
 const config = require('./config')
 const { assetsPath } = require('./utils')
-const env = require('../env.json')
-
-const oriEnv = env[constants.APP_ENV]
-Object.assign(oriEnv, {
-  APP_ENV: constants.APP_ENV
-})
-// 照旧将webpack下发变量置于process.env
-const defineEnv = {}
-for (let key in oriEnv) {
-  defineEnv[`process.env.${key}`] = JSON.stringify(oriEnv[key])
-}
-
-const basePlugins = [
-  new webpack.DefinePlugin(defineEnv),
-]
 
 const devPlugins = [
   new HtmlWebpackPlugin({
@@ -62,4 +47,4 @@ if (config.bundleAnalyzerReport) {
   prodPlugins.push(new BundleAnalyzerPlugin())
 }
 
-module.exports = basePlugins.concat(constants.APP_ENV === 'dev' ? devPlugins : prodPlugins)
+module.exports = constants.APP_ENV === 'dev' ? devPlugins : prodPlugins

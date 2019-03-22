@@ -24,7 +24,6 @@ Antd的`Form`很强大, 但是使用略显繁琐, 这里对其简单进行了封
 ```
 .
 ├── build  // 编译config
-│   ├── env.json
 │   ├── rules
 │   │   ├── fileRules.js
 │   │   ├── jsRules.js
