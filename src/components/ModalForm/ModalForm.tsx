@@ -86,7 +86,7 @@ class ModalForm extends BaseComponent {
 
   render() {
     const { items, modalProps, cols, cleared } = this.state;
-    if(cleared){
+    if (cleared) {
       return null;
     }
     return (
@@ -112,5 +112,5 @@ export default () => {
   return ReactDom.render(
     <ModalForm />,
     document.createElement('div')
-  ) as any
+  ) as unknown as ModalForm
 };
