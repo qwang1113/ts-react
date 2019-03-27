@@ -1,27 +1,30 @@
-import * as ReactDom from 'react-dom';
-import BaseComponent from '@components/Base';
 import { Modal } from 'antd';
 import * as React from 'react';
-import GenerateForm from '@components/GenerateForm';
+import * as ReactDom from 'react-dom';
+import { ModalProps } from 'antd/lib/modal';
 import { FormComponentProps } from 'antd/lib/form';
 
 import "./index.less";
-import { ModalProps } from 'antd/lib/modal';
+import BaseComponent from '@components/Base';
+import GenerateForm from '@components/GenerateForm';
 import { IFormItemProps } from '@components/GenerateForm/createElement';
 
 interface IShowParams extends ModalProps {
   cols?: 1 | 2 | 3 | 4;
-  items: IFormItemProps[]
+  items?: IFormItemProps[]
+  content?: JSX.Element
 }
 
 class ModalForm extends BaseComponent {
 
   form: FormComponentProps["form"]
 
+  dom: any
+
   state = {
     cols: 2,
     items: [],
-    cleared: false,
+    content: null,
     modalProps: {
       title: "",
       visible: false,
@@ -38,11 +41,11 @@ class ModalForm extends BaseComponent {
    * 显示modal
    */
   show = (obj: IShowParams, cb: Function) => {
-    const { cols, items, ...config } = obj;
+    const { cols, items, content, ...config } = obj;
     this.setState({
+      content,
       cols: cols || 2,
       items: items || [],
-      cleared: false,
       modalProps: {
         ...config,
         visible: true,
@@ -55,8 +58,8 @@ class ModalForm extends BaseComponent {
    * 关闭
    */
   close = () => {
-    this.form.resetFields();
     this.setState({
+      content: null,
       items: [],
       modalProps: {
         visible: false,
@@ -69,48 +72,68 @@ class ModalForm extends BaseComponent {
    */
   checkForm = () => {
     const { form, } = this;
-    form.validateFields((err, values) => {
-      if (err) return;
-      ('function' === typeof this.callback) && this.callback(values, this.close);
-    });
+    const { content } = this.state;
+    if (content) {
+      ('function' === typeof this.callback) && this.callback({}, this.close);
+    } else {
+      form.validateFields((err, values) => {
+        if (err) return;
+        ('function' === typeof this.callback) && this.callback(values, this.close);
+      });
+    }
   }
 
   /**
-   * 弹窗完全关闭后, 销毁dom元素
+   * 设置当前组件挂载的dom
+   * 供销毁组件使用
    */
-  clear = () => {
-    this.setState({
-      cleared: true
-    });
+  setDom = (dom: any) => {
+    this.dom = dom;
+  }
+
+  /**
+   * 在弹窗完全关闭后销毁弹窗实例
+   */
+  destory = () => {
+    this.dom && ReactDom.unmountComponentAtNode(this.dom);
   }
 
   render() {
-    const { items, modalProps, cols, cleared } = this.state;
-    if (cleared) {
-      return null;
-    }
+    const {
+      cols,
+      items,
+      content,
+      modalProps,
+    } = this.state;
     return (
       <Modal
         className="app-modal-form"
         {...modalProps}
         onOk={this.checkForm}
         onCancel={this.close}
-        afterClose={this.clear}
+        afterClose={this.destory}
       >
-        <GenerateForm
-          items={items}
-          getForm={form => this.form = form}
-          cols={cols}
-        />
+        {content ? content : (
+          <GenerateForm
+            items={items}
+            getForm={form => this.form = form}
+            cols={cols}
+          />
+        )}
       </Modal>
     );
   }
 }
 
 
-export default () => {
-  return ReactDom.render(
+export default (destory = true) => {
+  const dom = document.createElement('div');
+  const renderedContainer = ReactDom.render(
     <ModalForm />,
-    document.createElement('div')
-  ) as unknown as ModalForm
+    dom
+  ) as unknown as ModalForm;
+  if(destory){
+    renderedContainer.setDom(dom);
+  }
+  return renderedContainer;
 };

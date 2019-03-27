@@ -7,13 +7,11 @@ import FieldsTable from './FieldsTable';
 import { TableColumns, GenerateAddOrEditFieldSchema, AddOrEditTableSchema } from './schema';
 import { bindInitialValueWithSchema, generateHiddenFormItem } from '@utils/util';
 
-const Form = ModalForm();
-
 const filterList = [{
   label: '名称',
   dataKey: 'search',
   type: 'Input',
-  placeholder: '请输入...'
+  placeholder: '请输入...',
 }];
 
 class Tables extends BaseComponent<{}, {}>{
@@ -64,8 +62,7 @@ class Tables extends BaseComponent<{}, {}>{
     });
     ModalForm().show({
       title: '新增字段',
-      cols: 1,
-      items: GenerateAddOrEditFieldSchema(row.id)
+      content: <div>12312</div>
     }, async (values, close) => {
       const res = await this.$Post('/field/add', values);
       if (res) {

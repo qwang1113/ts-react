@@ -7,7 +7,7 @@ import Table from '@components/Table/Table';
 import { getSessionStorage } from '@utils/util';
 import ModalForm from '@components/ModalForm/ModalForm';
 
-const Form = ModalForm();
+const Form = ModalForm(false);
 
 const filterList = [{
   label: '用户名',
