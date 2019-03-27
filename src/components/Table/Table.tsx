@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import * as React from 'react';
 import { TableProps, ColumnProps } from 'antd/lib/table';
 import BaseComponent from '@components/Base';
@@ -9,7 +9,6 @@ import { IFormItemProps } from '@components/GenerateForm/createElement';
 import GenerateFormBtns, { IActionBtn } from '@components/GenerateForm/CreateFormBtns';
 
 import "./Table.less";
-import Modal from '@components/Modal/Modal';
 
 interface IState {
   size: number;
@@ -337,28 +336,30 @@ class BaseTable extends BaseComponent<IProps, IState>{
    * 多选删除按钮
    * @param selectedRowKeys Array<number> 待删除项目id
    */
-  handleDeleteRows = async (id) => {
+  handleDeleteRows = (id: any) => {
     const { deleteOption } = this.props;
     const { selectedRowKeys, shouldGetData } = this.state;
     const hasId = typeof id === 'number';
     const { url: deleteUrl, params: deleteParams, onDelete } = deleteOption;
-    await Modal.comfirm({
+    Modal.confirm({
       title: '提示',
-      content: '确定删除吗?'
+      content: '确定删除吗?',
+      onOk: async () => {
+        const res = await this.$Get(deleteUrl, {
+          idList: hasId ? [id] : selectedRowKeys,
+          ...deleteParams
+        });
+        if (res) {
+          this.setState({
+            selectedRowKeys: [],
+          },
+            shouldGetData
+              ? this.fetchData
+              : () => onDelete && onDelete(selectedRowKeys)
+          );
+        }
+      }
     });
-    const res = await this.$Get(deleteUrl, {
-      idList: hasId ? [id] : selectedRowKeys,
-      ...deleteParams
-    });
-    if (res) {
-      this.setState({
-        selectedRowKeys: [],
-      },
-        shouldGetData
-          ? this.fetchData
-          : () => onDelete && onDelete(selectedRowKeys)
-      );
-    }
   }
 
   /**

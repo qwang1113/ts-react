@@ -7,6 +7,8 @@ import FieldsTable from './FieldsTable';
 import { TableColumns, GenerateAddOrEditFieldSchema, AddOrEditTableSchema } from './schema';
 import { bindInitialValueWithSchema, generateHiddenFormItem } from '@utils/util';
 
+const Form = ModalForm();
+
 const filterList = [{
   label: '名称',
   dataKey: 'search',
@@ -29,7 +31,11 @@ class Tables extends BaseComponent<{}, {}>{
     if (row && typeof row.id !== undefined) {
       id = row.id;
     }
-    ModalForm.show({
+    console.log(bindInitialValueWithSchema(
+      [...AddOrEditTableSchema, generateHiddenFormItem(id)],
+      row
+    ));
+    ModalForm().show({
       cols: 1,
       items: id ? bindInitialValueWithSchema(
         [...AddOrEditTableSchema, generateHiddenFormItem(id)],
@@ -46,7 +52,21 @@ class Tables extends BaseComponent<{}, {}>{
   }
 
   addField = (row: any) => {
-    ModalForm.show({
+    ModalForm().show({
+      title: '新增字段',
+      cols: 1,
+      items: GenerateAddOrEditFieldSchema(row.id)
+    }, async (values, close) => {
+      const res = await this.$Post('/field/add', values);
+      if (res) {
+        const currentRef = this.fieldRefs[row.id];
+        if (currentRef) {
+          currentRef.fetchData();
+        }
+        close();
+      }
+    });
+    ModalForm().show({
       title: '新增字段',
       cols: 1,
       items: GenerateAddOrEditFieldSchema(row.id)

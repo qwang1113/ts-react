@@ -21,6 +21,7 @@ class ModalForm extends BaseComponent {
   state = {
     cols: 2,
     items: [],
+    cleared: false,
     modalProps: {
       title: "",
       visible: false,
@@ -41,6 +42,7 @@ class ModalForm extends BaseComponent {
     this.setState({
       cols: cols || 2,
       items: items || [],
+      cleared: false,
       modalProps: {
         ...config,
         visible: true,
@@ -73,14 +75,27 @@ class ModalForm extends BaseComponent {
     });
   }
 
+  /**
+   * 弹窗完全关闭后, 销毁dom元素
+   */
+  clear = () => {
+    this.setState({
+      cleared: true
+    });
+  }
+
   render() {
-    const { items, modalProps, cols } = this.state;
+    const { items, modalProps, cols, cleared } = this.state;
+    if(cleared){
+      return null;
+    }
     return (
       <Modal
         className="app-modal-form"
         {...modalProps}
         onOk={this.checkForm}
         onCancel={this.close}
+        afterClose={this.clear}
       >
         <GenerateForm
           items={items}
@@ -93,7 +108,9 @@ class ModalForm extends BaseComponent {
 }
 
 
-export default ReactDom.render(
-  <ModalForm />,
-  document.createElement('div')
-) as any;
+export default () => {
+  return ReactDom.render(
+    <ModalForm />,
+    document.createElement('div')
+  ) as any
+};

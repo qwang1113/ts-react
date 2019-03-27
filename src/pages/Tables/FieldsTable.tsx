@@ -17,7 +17,7 @@ class FieldsTable extends BaseComponent<IProps, {}>{
 
   editField = (row: any) => {
     const { tableId } = this.props;
-    ModalForm.show({
+    ModalForm().show({
       cols: 1,
       items: bindInitialValueWithSchema(
         GenerateAddOrEditFieldSchema(tableId, row.id),

@@ -7,6 +7,8 @@ import Table from '@components/Table/Table';
 import { getSessionStorage } from '@utils/util';
 import ModalForm from '@components/ModalForm/ModalForm';
 
+const Form = ModalForm();
+
 const filterList = [{
   label: '用户名',
   dataKey: 'search',
@@ -18,13 +20,13 @@ const filterList = [{
   type: 'RangePicker'
 }];
 
-const generateValidator = key => {
+const generateValidator = (key) => {
+  const { form } = Form;
   return (rules, value, cb) => {
-    const { form } = ModalForm;
     if (!form) {
       return cb();
     }
-    if(!value || !form.getFieldValue(key)){
+    if (!value || !form.getFieldValue(key)) {
       return cb();
     }
     if (value !== form.getFieldValue(key)) {
@@ -97,7 +99,7 @@ class Tables extends BaseComponent<{}, {}>{
    * 添加新用户
    */
   handleAddNewUser = async () => {
-    ModalForm.show({
+    Form.show({
       title: '新增用户',
       cols: 1,
       items: this.getAddUserList()
@@ -119,7 +121,7 @@ class Tables extends BaseComponent<{}, {}>{
    * @param user User
    */
   handleEditUser = async (current) => {
-    ModalForm.show({
+    Form.show({
       title: '编辑用户',
       cols: 1,
       items: this.getAddUserList().map(user => {
@@ -179,9 +181,9 @@ class Tables extends BaseComponent<{}, {}>{
           selectText={(rows) => {
             return `已选: ${rows.length}项`
           }}
-          // onDataChanged={(data, filter) => {
-          //   console.log(data, filter);
-          // }}
+        // onDataChanged={(data, filter) => {
+        //   console.log(data, filter);
+        // }}
         />
       </div>
     );

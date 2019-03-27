@@ -42,9 +42,9 @@ class Home extends BaseComponent<IStoreProps, {}> {
 
   constructor(props) {
     super(props);
-    // if (!getSessionStorage('token')) {
-    //   location.href = '/#/login';
-    // }
+    if (!getSessionStorage('token')) {
+      location.href = '/#/login';
+    }
   }
 
   /**
