@@ -151,12 +151,13 @@ export const bindInitialValueWithSchema = (
  */
 export const generateHiddenFormItem = (
   key: string,
-  type?: IFormItemProps['type']
+  value: any,
+  type: IFormItemProps['type'] = 'Input'
 ) => {
   return {
-    label: key,
     dataKey: key,
     type: type || 'Input',
+    initialValue: type === 'Input' ? (value || '') + '' : value,
     labelOptions: {
       style: {
         display: 'none'

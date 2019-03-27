@@ -31,14 +31,10 @@ class Tables extends BaseComponent<{}, {}>{
     if (row && typeof row.id !== undefined) {
       id = row.id;
     }
-    console.log(bindInitialValueWithSchema(
-      [...AddOrEditTableSchema, generateHiddenFormItem(id)],
-      row
-    ));
     ModalForm().show({
       cols: 1,
       items: id ? bindInitialValueWithSchema(
-        [...AddOrEditTableSchema, generateHiddenFormItem(id)],
+        [...AddOrEditTableSchema, generateHiddenFormItem('id', id)],
         row
       ) : AddOrEditTableSchema,
       title: (id ? '编辑' : '新增') + '数据表'
