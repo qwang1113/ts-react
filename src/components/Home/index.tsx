@@ -15,7 +15,7 @@ import Sider from '@components/Sider';
 import Loading from '@components/Loading';
 import NotFound from '@components/NotFound';
 import Header from '@components/Header';
-import { getRoutesByPath, getSessionStorage } from '@utils/util';
+import { getRoutesByPath } from '@utils/util';
 
 import menu, { IMenu } from '../../utils/menu';
 import './index.less';
@@ -39,13 +39,6 @@ class Home extends BaseComponent<IStoreProps, {}> {
   @computed
   get selectedKeys() {
     return this.props.routerStore.location.pathname;
-  }
-
-  constructor(props) {
-    super(props);
-    if (!getSessionStorage('token')) {
-      location.href = '/#/login';
-    }
   }
 
   /**
@@ -94,13 +87,13 @@ class Home extends BaseComponent<IStoreProps, {}> {
             exact={singleMenu.exact !== false}
             path={prefix + singleMenu.path}
             component={() => React.createElement(singleMenu.component || null)}
-            atEnter={{ offset: 30, opacity: 0 }}
-            atLeave={{ offset: 30, opacity: 0 }}
-            atActive={{ offset: 0, opacity: 1 }}
-            mapStyles={({offset, opacity}) => {
+            atEnter={{ offset: 100, opacity: 0, scale: .8 }}
+            atLeave={{ offset: 100, opacity: 0, scale: .8 }}
+            atActive={{ offset: 0, opacity: 1, scale: 1 }}
+            mapStyles={({ offset, opacity, scale }) => {
               return {
-                transform: `translateY(${offset}%)`,
-                opacity
+                opacity,
+                transform: `translateY(${offset}px) scale(${scale}, 1)`,
               }
             }}
           />
