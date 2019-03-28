@@ -3,7 +3,7 @@ import * as qs from 'querystring';
 import { message } from 'antd';
 import { getSessionStorage, removeSessionStorage } from '@utils/util';
 
-export const baseUrl = '/api';
+export const baseUrl = process.env.NODE_ENV === 'production' ? '' : '/api';
 
 const headers = {
   'Content-Type': 'application/json',

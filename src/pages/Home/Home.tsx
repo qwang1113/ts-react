@@ -81,7 +81,7 @@ class Home extends BaseComponent<{}, {}>{
               label: '多文件上传',
               dataKey: 'MultiUpload',
               type: 'Upload',
-              max: 3
+              max: 3,
             },
             <Title text="开关, 单选, 复选" />,
             {
