@@ -9,6 +9,7 @@ import { computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { hot } from 'react-hot-loader';
 import { Layout, Breadcrumb } from 'antd';
+import { AnimatedRoute } from 'react-router-transition';
 
 import Sider from '@components/Sider';
 import Loading from '@components/Loading';
@@ -87,11 +88,21 @@ class Home extends BaseComponent<IStoreProps, {}> {
         prefix = '';
       } else {
         routes.push(
-          <Route
+          <AnimatedRoute
+            runOnMount
             key={prefix + singleMenu.path}
             exact={singleMenu.exact !== false}
             path={prefix + singleMenu.path}
             component={() => React.createElement(singleMenu.component || null)}
+            atEnter={{ offset: 30, opacity: 0 }}
+            atLeave={{ offset: 30, opacity: 0 }}
+            atActive={{ offset: 0, opacity: 1 }}
+            mapStyles={({offset, opacity}) => {
+              return {
+                transform: `translateY(${offset}%)`,
+                opacity
+              }
+            }}
           />
         );
       }

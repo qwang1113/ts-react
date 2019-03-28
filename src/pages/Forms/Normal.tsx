@@ -32,25 +32,7 @@ export default class Normal extends BaseComponent {
               type: 'Input',
               placeholder: '请输入',
               required: true
-            }, {
-              label: '普通输入框(禁用)',
-              dataKey: 'disableInput',
-              type: 'Input',
-              placeholder: '请输入',
-              componentProps: {
-                disabled: true
-              }
-            },
-            {
-              label: '密码输入',
-              dataKey: 'disableInput1',
-              type: 'Input',
-              placeholder: '请输入',
-              componentProps: {
-                type: 'password'
-              }
-            },
-            null
+            }
           ]}
         />
       </div>
