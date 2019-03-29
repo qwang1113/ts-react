@@ -55,13 +55,11 @@ export const GenerateAddOrEditFieldSchema = (tableId, fieldId?) => {
     dataKey: 'type',
     type: 'Select',
     required: true,
-    options: [{
-      label: 'string',
-      value: 'string'
-    }, {
-      label: 'number',
-      value: 'number'
-    }]
+    options: [
+      'string',
+      'number',
+      'boolean'
+    ]
   }, {
     label: '数据表描述',
     dataKey: 'description',

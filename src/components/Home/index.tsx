@@ -44,7 +44,7 @@ class Home extends BaseComponent<IStoreProps, {}> {
   /**
    * 路由变化自动设置页面标题
    */
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props: IStoreProps) {
     const pathname = props.routerStore.location.pathname;
     const routes = getRoutesByPath(pathname, menu);
     if (routes && routes.length > 0) {
@@ -87,8 +87,8 @@ class Home extends BaseComponent<IStoreProps, {}> {
             exact={singleMenu.exact !== false}
             path={prefix + singleMenu.path}
             component={() => React.createElement(singleMenu.component || null)}
-            atEnter={{ offset: 100, opacity: 0, scale: .8 }}
-            atLeave={{ offset: 100, opacity: 0, scale: .8 }}
+            atEnter={{ offset: 50, opacity: 0, scale: .95 }}
+            atLeave={{ offset: 50, opacity: 0, scale: .95 }}
             atActive={{ offset: 0, opacity: 1, scale: 1 }}
             mapStyles={({ offset, opacity, scale }) => {
               return {

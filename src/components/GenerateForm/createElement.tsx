@@ -59,7 +59,7 @@ export interface IFormItemProps extends IFormItemBase {
   placeholder?: string;
   componentProps?: IBaseObj; // 表单组件的props
   labelOptions?: FormItemProps; // formItem的props
-  options?: string | ISelectOption[]; // select, radioGroup, Checkbox 的options list
+  options?: string | ISelectOption[] | string[]; // select, radioGroup, Checkbox 的options list
   validateOption?: GetFieldDecoratorOptions; // getFieldDecorator 第二个参数
   params?: IBaseObj;
   labelKey?: string
@@ -108,7 +108,7 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
   }
 
   @action
-  updateOption = (value) => {
+  updateOption = (value: any[]) => {
     this.options = value;
   }
 
@@ -148,14 +148,20 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
 
   /**
    * 判断获取options
-   * @memberof GenerateForm
    */
-  getOptionList = (type: string, options: ISelectOption[] | string) => {
-    if (Array.isArray(options)) {
-      return options;
-    }
+  getOptionList = (options: string | any[]) => {
     if ('string' === typeof options) {
       return this.options;
+    } else if (Array.isArray(options)) {
+      return options.map(opt => {
+        if('string' === typeof opt){
+          return {
+            label: opt,
+            value: opt,
+          }
+        }
+        return opt;
+      })
     }
     return [];
   }
@@ -205,7 +211,7 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
         break;
       case 'Radio':
       case 'Checkbox':
-        props.options = this.getOptionList(type, options);
+        props.options = this.getOptionList(options);
         break;
       case 'Select':
         {
@@ -219,7 +225,7 @@ export default class CreateElement extends React.Component<IFormItemProps & any>
               ) >= 0;
             }
           });
-          const labelOptions = this.getOptionList(type, options);
+          const labelOptions = this.getOptionList(options);
           children = labelOptions.map((opt: ISelectOption) => {
             return (
               <Select.Option

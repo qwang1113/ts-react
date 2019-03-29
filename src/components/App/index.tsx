@@ -13,7 +13,7 @@ import Home from '@components/Home';
 import Login from '@pages/Login/Login';
 import { getSessionStorage } from '@utils/util';
 
-const AppWrapper = props => <div className="appWrapper">{props.children}</div>;
+const AppWrapper = (props: { children: React.ReactNode; }) => <div className="appWrapper">{props.children}</div>;
 
 const AppRouter = () => {
   const token = Cookie.get('token') || getSessionStorage('token');
