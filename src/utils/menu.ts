@@ -6,6 +6,7 @@ export const NotFound = lazy(() => import( /* webpackChunkName: "NotFound" */ '@
 export const Users = lazy(() => import( /* webpackChunkName: "UserManager" */ '@pages/Users/Users'))
 export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
 export const Normal = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Forms/Normal'))
+export const HelloWorld = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Three/HelloWorld'))
 export const Tables = lazy(() => import( /* webpackChunkName: "Tables" */ '@pages/Tables/Tables'))
 
 export interface IMenu {
@@ -41,11 +42,23 @@ export const menu: IMenu[] = [
     path: '/forms',
     title: '表单',
     icon: 'user',
+    showInMenu: false,
     children: [{
       path: '/normal',
       title: '普通输入框',
       icon: 'user',
       component: Normal
+    }]
+  },
+  {
+    path: '/three',
+    title: 'Three.js示例',
+    icon: 'user',
+    children: [{
+      path: '/hello_world',
+      title: 'hello_world',
+      icon: 'user',
+      component: HelloWorld
     }]
   },
 ];

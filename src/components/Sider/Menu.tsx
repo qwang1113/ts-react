@@ -88,7 +88,7 @@ class SiderMenu extends React.Component<IStoreProps> {
    *
    * @memberof SiderMenu
    */
-  openMenu = openKeys => {
+  openMenu = (openKeys: string[]) => {
     const { setOpenKeys } = this.props;
     setOpenKeys(openKeys);
   }

@@ -60,19 +60,6 @@ class Tables extends BaseComponent<{}, {}>{
         close();
       }
     });
-    ModalForm().show({
-      title: '新增字段',
-      content: <div>12312</div>
-    }, async (values, close) => {
-      const res = await this.$Post('/field/add', values);
-      if (res) {
-        const currentRef = this.fieldRefs[row.id];
-        if (currentRef) {
-          currentRef.fetchData();
-        }
-        close();
-      }
-    });
   }
 
   render() {
