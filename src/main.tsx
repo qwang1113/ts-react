@@ -34,7 +34,7 @@ render(
 ((doc, win) => {
   const docEl = doc.documentElement,
     resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-    recalc = () => {
+    func = () => {
       const scrollWidth = docEl.scrollWidth;
       if (!scrollWidth) { return; }
       if (scrollWidth > 1940) {
@@ -47,6 +47,6 @@ render(
       }
     };
   if (!doc.addEventListener) { return; }
-  win.addEventListener(resizeEvt, recalc, false);
-  doc.addEventListener('DOMContentLoaded', recalc, false);
+  win.addEventListener(resizeEvt, func, false);
+  doc.addEventListener('DOMContentLoaded', func, false);
 })(document, window);

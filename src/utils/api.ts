@@ -1,4 +1,4 @@
-import * as Cookie from 'js-cookie';
+import Cookie from 'js-cookie';
 import * as qs from 'querystring';
 import { message } from 'antd';
 import { getSessionStorage, removeSessionStorage } from '@utils/util';
@@ -10,9 +10,9 @@ const headers = {
   'Authorization': `Bearer ${getSessionStorage('token')}`
 };
 
-const generate = async response => {
+const generate = async (response: Promise<Response>) => {
   const res = await response;
-  let result;
+  let result: { message: any; };
   try {
     result = await res.json();
   } catch (error) {
@@ -48,7 +48,7 @@ export const Get = async (url: string, data = {}): Promise<any> => {
   }));
 };
 
-export const Put = async (url: string, data): Promise<any> => {
+export const Put = async (url: string, data: any): Promise<any> => {
   return generate(fetch(baseUrl + url, {
     method: 'PUT',
     body: JSON.stringify(data),
@@ -56,7 +56,7 @@ export const Put = async (url: string, data): Promise<any> => {
   }));
 };
 
-export const Post = async (url: string, data): Promise<any> => {
+export const Post = async (url: string, data: any): Promise<any> => {
   return generate(fetch(baseUrl + url, {
     method: 'Post',
     body: JSON.stringify(data),

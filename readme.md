@@ -1,4 +1,4 @@
-# ts-react 
+# ts-react
 
 基于typescript&react(v16.8+)&antd&mobx的基础前端框架
 
@@ -21,7 +21,8 @@ fork自Antd仓库, 加上了响应式支持
 Antd的`Form`很强大, 但是使用略显繁琐, 这里对其简单进行了封装, 详情请查看`./src/pages/Home`
 
 ## 目录说明
-```
+
+```bash
 .
 ├── build  // 编译config
 │   ├── rules
