@@ -146,7 +146,7 @@ class Tables extends BaseComponent<{}, {}>{
   render() {
     const userInfo = JSON.parse(getSessionStorage('userInfo') || '{}');
     return (
-      <div className="tables-container">
+      <div className="container">
         <Table
           showIndex
           ref={ref => this.table = ref}

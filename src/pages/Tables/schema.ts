@@ -22,7 +22,7 @@ export const TableColumns = [{
  * 新增字段
  * @param id number 表格id
  */
-export const GenerateAddOrEditFieldSchema = (tableId, fieldId?) => {
+export const GenerateAddOrEditFieldSchema = (tableId: string, fieldId?: string) => {
   return [{
     label: 'tableId',
     dataKey: 'tableId',

@@ -82,6 +82,7 @@ class Home extends BaseComponent<IStoreProps, {}> {
       } else {
         routes.push(
           <AnimatedRoute
+            className="app-route-container"
             runOnMount
             key={prefix + singleMenu.path}
             exact={singleMenu.exact !== false}
@@ -108,10 +109,10 @@ class Home extends BaseComponent<IStoreProps, {}> {
     return (
       <Layout>
         <Sider />
-        <Layout>
+        <Layout className="app-container_right">
           <Header />
           <Layout.Content className="app-content">
-            <Breadcrumb style={{ display: 'block' }}>
+            <Breadcrumb>
               <Breadcrumb.Item>
                 <Link to={home}>主页</Link>
               </Breadcrumb.Item>

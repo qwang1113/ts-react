@@ -36,7 +36,7 @@ class Tables extends BaseComponent<{}, {}>{
         row
       ) : AddOrEditTableSchema,
       title: (id ? '编辑' : '新增') + '数据表'
-    }, async (values, close) => {
+    }, async (values: any, close: () => void) => {
       const res = await this.$Post('/table/add', values);
       if (res) {
         this.table.fetchData();
@@ -50,7 +50,7 @@ class Tables extends BaseComponent<{}, {}>{
       title: '新增字段',
       cols: 1,
       items: GenerateAddOrEditFieldSchema(row.id)
-    }, async (values, close) => {
+    }, async (values: any, close: () => void) => {
       const res = await this.$Post('/field/add', values);
       if (res) {
         const currentRef = this.fieldRefs[row.id];
@@ -64,7 +64,7 @@ class Tables extends BaseComponent<{}, {}>{
 
   render() {
     return (
-      <div className="tables-container">
+      <div className="container">
         <Table
           ref={ref => this.table = ref}
           deleteOption={{
