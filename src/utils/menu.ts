@@ -7,6 +7,8 @@ export const Users = lazy(() => import( /* webpackChunkName: "UserManager" */ '@
 export const Home = lazy(() => import( /* webpackChunkName: "Home" */ '@pages/Home/Home'))
 export const Normal = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Forms/Normal'))
 export const HelloWorld = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Three/HelloWorld'))
+export const Light = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Three/Light'))
+export const Texture = lazy(() => import( /* webpackChunkName: "Normal" */ '@pages/Three/Texture'))
 export const Tables = lazy(() => import( /* webpackChunkName: "Tables" */ '@pages/Tables/Tables'))
 
 export interface IMenu {
@@ -59,6 +61,16 @@ export const menu: IMenu[] = [
       title: 'hello_world',
       icon: 'user',
       component: HelloWorld
+    }, {
+      path: '/light',
+      title: 'light',
+      icon: 'user',
+      component: Light
+    }, {
+      path: '/texture',
+      title: 'texture',
+      icon: 'user',
+      component: Texture
     }]
   },
 ];

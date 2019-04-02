@@ -13,6 +13,10 @@ import {
   Vector3,
   Line,
   AmbientLight,
+  Light,
+  DirectionalLight,
+  MeshLambertMaterial,
+  PointLight,
 } from 'three';
 import BaseComponent from '@components/Base';
 
@@ -42,32 +46,24 @@ export default class HelloWorld extends BaseComponent {
   getCamera = () => {
     const { clientWidth, clientHeight } = this.container;
     const camera = new PerspectiveCamera(75, clientWidth / clientHeight, 0.1, 1000);
-    // camera.position.z = 20;
-    camera.position.set(0, 0, 150);
+    // camera.position.set(5, 0, 2)
+    // // camera.up.set(0, 0, 0);
+    // camera.lookAt(0, 0, 0);
+    camera.position.x = 2;
+    camera.position.y = 2;
+    camera.position.z = 2;
     camera.lookAt(0, 0, 0);
     this.camera = camera;
     return camera;
   }
 
-  getCube = () => {
-    const geometry = new BoxGeometry(5, 5, 5);
-    const material = new MeshBasicMaterial({ color: 0xff5555 });
-    const cube = new Mesh(geometry, material);
-    cube.position.set(0, 0, 5);
-    return cube;
-  }
-
-  getLine = (color1: string | number | Color, color2: string | number | Color, vector1: any, vector2: any) => {
-    const geometry = new Geometry();
-    const material = new LineBasicMaterial({ vertexColors: VertexColors });
-    const cl1 = new Color(color1);
-    const cl2 = new Color(color2);
-    const p1 = new Vector3(...vector1);
-    const p2 = new Vector3(...vector2);
-    geometry.vertices.push(p1, p2);
-    geometry.colors.push(cl1, cl2);
-    const line = new Line(geometry, material);
-    return line;
+  getMesh = () => {
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshLambertMaterial({ color: 0xffffff });
+    const mesh = new Mesh(geometry, material);
+    mesh.position.set(0, 0, 0);
+    // mesh.rotation.set(2, 2, 0);
+    return mesh;
   }
 
   init = () => {
@@ -78,27 +74,30 @@ export default class HelloWorld extends BaseComponent {
       antialias: true
     });
     this.renderer.setSize(clientWidth, clientHeight);
-    this.renderer.setClearColor(0xFFFFFF, 1);
+    // this.renderer.setClearColor(0xFFFFFF, 1);
     this.container.appendChild(this.renderer.domElement);
 
-    for (let i = -100; i <= 100; i += 5) {
-      const line1 = this.getLine(0x444444, 0xff5555, [-100, i, 5], [100, i, 5]);
-      const line2 = this.getLine(0x444444, 0xff5555, [i, -100, 5], [i, 100, 5]);
-      scene.add(line1);
-      scene.add(line2);
-    }
+    const mesh = this.getMesh();
+    const light = new DirectionalLight(0xf40928, 1);
+    light.position.set(0, 0, 1);
 
-    var light = new AmbientLight(0x000000);
+    const aLight = new AmbientLight(0x09d2f4);
+    aLight.position.set(0, 0, 0);
 
+    const pLight = new PointLight(0x57f409, .2);
+    pLight.position.set(2, 0, 50);
+    scene.add(pLight);
+    scene.add(aLight);
     scene.add(light);
+    scene.add(mesh);
 
     const render = () => {
       if (!this.renderer) {
         return;
       }
-      this.camera.rotation.y += .05;
-      this.camera.rotation.z += .05;
-      this.camera.rotation.x += .05;
+      mesh.rotation.x += .01;
+      mesh.rotation.y += .01;
+      mesh.rotation.z += .01;
       this.renderer.render(scene, camera);
       requestAnimationFrame(render);
     }
