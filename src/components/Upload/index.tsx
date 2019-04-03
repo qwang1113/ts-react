@@ -20,7 +20,7 @@ export default class Upload extends BaseComponent<{ max: number } & any> {
     onChange && onChange(files);
   }
 
-  getUploadElement = max => {
+  getUploadElement = (max: number) => {
     const { listType } = this.props;
     if (this.props.fileList.length >= max) {
       return null;

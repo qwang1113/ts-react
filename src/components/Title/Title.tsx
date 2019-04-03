@@ -1,6 +1,10 @@
 import React from 'react';
 
-const Title = (props) => {
+interface ITitleProps {
+  text?: string | JSX.Element
+}
+
+const Title = (props: ITitleProps) => {
   const { text } = props;
   return (
     <div className="app-title">{text}</div>
