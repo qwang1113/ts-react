@@ -43,7 +43,8 @@ class FieldsTable extends BaseComponent<IProps, {}>{
         dataOptions={{
           url: '/fields',
           params: {
-            tableId
+            tableId,
+            size: 100
           }
         }}
         deleteOption={{

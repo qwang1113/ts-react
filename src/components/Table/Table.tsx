@@ -162,10 +162,10 @@ class BaseTable extends BaseComponent<IProps, IState>{
         filterValues = await this.formRef.getFormFieldsValue();
       }
       const res = await this.$Post(url, {
-        ...params,
         ...filterValues,
         size,
-        page
+        page,
+        ...params,
       });
       if (res) {
         const { content, total } = res;
