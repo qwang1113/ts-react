@@ -56,7 +56,7 @@ export interface ISelectOption {
 }
 
 export interface IFormItemProps extends IFormItemBase {
-  placeholder?: string;
+  placeholder?: string | string[];
   componentProps?: IBaseObj; // 表单组件的props
   labelOptions?: FormItemProps; // formItem的props
   options?: string | ISelectOption[] | string[]; // select, radioGroup, Checkbox 的options list
@@ -65,6 +65,11 @@ export interface IFormItemProps extends IFormItemBase {
   labelKey?: string
   valueKey?: string
   childrenKey?: string
+  component?: (values: any, onChange: Function) => JSX.Element
+  value?: any
+  checked?: boolean
+  onChange?: Function
+  fileList?: any
 }
 
 const {
@@ -92,7 +97,7 @@ const Components: IComponents = {
 };
 
 @observer
-export default class CreateElement extends React.Component<IFormItemProps & any> {
+export default class CreateElement extends React.Component<IFormItemProps> {
 
   @observable options = [];
 
