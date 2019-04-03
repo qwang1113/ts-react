@@ -37,7 +37,7 @@ interface IFormItemBase {
   required?: boolean;
   style?: React.CSSProperties;
 
-  dataKey: string;
+  dataKey?: string;
 
   type?: keyof typeof Components;
 

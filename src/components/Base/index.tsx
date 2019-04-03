@@ -11,12 +11,12 @@ class BaseComponent<P = {}, S = {}> extends React.Component<P, S>{
   $Post = Post
   $Put = Put
 
-  $error = (msg) => {
+  $error = (msg: string) => {
     message.destroy();
     message.error(msg);
   }
 
-  $success = (msg) => {
+  $success = (msg: string) => {
     message.destroy();
     message.success(msg);
   }

@@ -27,19 +27,21 @@ interface IFormProps extends FormProps {
   btnContainerClassName?: string
   btnContainerStyle?: React.StyleHTMLAttributes<any>
   btns?: (IFormSubmitButton & ButtonProps)[]
-  getForm?: (form: any) => any
-  onSubmit?: (IBaseObj) => any
+  getForm?: (form: FormComponentProps["form"]) => any
+  onSubmit?: (values: IBaseObj) => any
 }
 
-class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
+export type IGenerateFormProps = IFormProps & FormComponentProps;
 
-  constructor(props) {
+class GenerateForm extends BaseComponent<IGenerateFormProps, {}> {
+
+  constructor(props: IGenerateFormProps) {
     super(props);
     const { getForm } = props;
     getForm && getForm(props.form);
   }
 
-  static defaultProps: Partial<IFormProps & FormComponentProps> = {
+  static defaultProps: Partial<IGenerateFormProps> = {
     cols: 2
   };
 
@@ -64,7 +66,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       validateOption = {}
     } = item;
     let { initialValue } = item;
-    let valuePropName;
+    let valuePropName: string;
     const computedRules = rules;
     if (['Input', 'TextArea'].find(item => item === type)) {
       computedRules.push({
@@ -79,7 +81,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       case 'Upload':
         valuePropName = 'fileList';
         if (initialValue) {
-          initialValue = initialValue.filter(v => v && !isEmpty(v));
+          initialValue = initialValue.filter((v: any) => v && !isEmpty(v));
         }
         break;
       default:
@@ -120,13 +122,6 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
   }
 
   /**
-   * 判断数据类型, 是否是FormItemProps
-   */
-  isFormItemProps = (item: any): item is IFormItemProps => {
-    return item && typeof (item as IFormItemProps)['dataKey'] !== 'undefined'
-  }
-
-  /**
    * 获取并格式化表单数据
    */
   getFormFieldsValue = async () => {
@@ -135,10 +130,10 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
     let clonedValues: IBaseObj = Object.assign({}, values);
     Object.keys(values).forEach(key => {
       const currentItem = items.find(item => {
-        return this.isFormItemProps(item) && item.dataKey === key
+        return item && item.dataKey === key
       });
       // fuck
-      if (!this.isFormItemProps(currentItem)) {
+      if (!currentItem) {
         return;
       }
       const type = currentItem.type;
@@ -151,7 +146,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
           }
         } else {
           // 多文件
-          clonedValues[key] = get(values, `${key}.fileList`, []).map(file => {
+          clonedValues[key] = get(values, `${key}.fileList`, []).map((file: any) => {
             if (get(file, `status`) === 'done') {
               return get(file, `response.id`);
             }
@@ -165,7 +160,7 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       }
       if (type === 'RangePicker' && values[key]) {
         if (!get(currentItem, 'componentProps.showTime')) {
-          clonedValues[key] = values[key].map((time, idx) => dayjs(`${time.format('YYYY-MM-DD')} ${idx === 0 ? '00:00:00' : '23:59:59'}`));
+          clonedValues[key] = values[key].map((time: { format: (arg0: string) => void; }, idx: number) => dayjs(`${time.format('YYYY-MM-DD')} ${idx === 0 ? '00:00:00' : '23:59:59'}`));
         }
       }
     });
@@ -204,7 +199,22 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
       >
         {
           items.map((item, idx) => {
-            if (this.isFormItemProps(item)) {
+            if (item === null) {
+              return null;
+            } else if (item === undefined) {
+              return (
+                <div className="ant-form-item" key={idx} />
+              )
+            } else if (React.isValidElement(item)) {
+              return (
+                <React.Fragment key={idx}>
+                  {item}
+                </React.Fragment>
+              )
+            } else if (!item.dataKey) {
+              console.error(item, 'formItem config must have a dataKey props');
+              return null
+            } else {
               return (
                 <Form.Item
                   key={item.dataKey}
@@ -218,21 +228,6 @@ class GenerateForm extends BaseComponent<IFormProps & FormComponentProps, {}> {
                 </Form.Item>
               )
             }
-            if (item === undefined) {
-              return item;
-            }
-            if (item === null) {
-              return (
-                <div className="ant-form-item" key={idx} >
-                  {item}
-                </div>
-              )
-            }
-            return (
-              <React.Fragment key={idx}>
-                {item}
-              </React.Fragment>
-            )
           })
         }
         {

@@ -44,7 +44,7 @@ export const menu: IMenu[] = [
     path: '/forms',
     title: '表单',
     icon: 'user',
-    showInMenu: false,
+    // showInMenu: false,
     children: [{
       path: '/normal',
       title: '普通输入框',

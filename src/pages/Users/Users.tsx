@@ -6,6 +6,7 @@ import "./Users.less";
 import Table from '@components/Table/Table';
 import { getSessionStorage } from '@utils/util';
 import ModalForm from '@components/ModalForm/ModalForm';
+import { ValidationRule } from 'antd/lib/form';
 
 const Form = ModalForm(false);
 
@@ -20,9 +21,9 @@ const filterList = [{
   type: 'RangePicker'
 }];
 
-const generateValidator = (key) => {
+const generateValidator = (key: string): ValidationRule['validator'] => {
   const { form } = Form;
-  return (rules, value, cb) => {
+  return (_rules, value, cb) => {
     if (!form) {
       return cb();
     }
@@ -120,7 +121,7 @@ class Tables extends BaseComponent<{}, {}>{
    * 编辑用户
    * @param user User
    */
-  handleEditUser = async (current) => {
+  handleEditUser = async (current: { [x: string]: any; }) => {
     Form.show({
       title: '编辑用户',
       cols: 1,

@@ -1,27 +1,45 @@
 import { Modal } from 'antd';
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
+import {
+  render,
+  unmountComponentAtNode,
+} from 'react-dom';
 import { ModalProps } from 'antd/lib/modal';
 import { FormComponentProps } from 'antd/lib/form';
 
 import "./index.less";
 import BaseComponent from '@components/Base';
-import GenerateForm from '@components/GenerateForm';
+import GenerateForm, { IGenerateFormProps } from '@components/GenerateForm';
 import { IFormItemProps } from '@components/GenerateForm/createElement';
 
 interface IShowParams extends ModalProps {
-  cols?: 1 | 2 | 3 | 4;
+  cols?: IGenerateFormProps['cols'];
   items?: IFormItemProps[]
   content?: JSX.Element
 }
 
-class ModalForm extends BaseComponent {
+interface ICallback {
+  (values: any, close: Function): void;
+}
 
-  form: FormComponentProps["form"]
+interface IState {
+  cols: IGenerateFormProps['cols']
+  items: IFormItemProps[]
+  content: JSX.Element
+  modalProps: ModalProps,
+}
 
-  dom: any
+class ModalForm extends BaseComponent<{}, IState> {
 
-  state = {
+  dom: HTMLDivElement // 弹窗挂载的dom节点
+  
+  form: FormComponentProps["form"] // antd form
+
+  callback: ICallback = undefined;  // show方法的callback
+
+  shouldDestoryInstanceOnClose: boolean = true // 是否在modal 关闭后销毁实例
+
+  state: IState = {
     cols: 2,
     items: [],
     content: null,
@@ -34,18 +52,15 @@ class ModalForm extends BaseComponent {
     },
   }
 
-  callback = undefined;
-  getForm = undefined;
-
   /**
    * 显示modal
    */
-  show = (obj: IShowParams, cb: Function) => {
-    const { cols, items, content, ...config } = obj;
+  show = (obj: IShowParams, cb: (values: any, close: Function) => void) => {
+    const { cols = 2, items = [], content, ...config } = obj;
     this.setState({
+      cols,
+      items,
       content,
-      cols: cols || 2,
-      items: items || [],
       modalProps: {
         ...config,
         visible: true,
@@ -73,13 +88,13 @@ class ModalForm extends BaseComponent {
   checkForm = () => {
     const { form, } = this;
     const { content } = this.state;
-    if (content) {
-      ('function' === typeof this.callback) && this.callback({}, this.close);
-    } else {
-      form.validateFields((err, values) => {
-        if (err) return;
-        ('function' === typeof this.callback) && this.callback(values, this.close);
-      });
+    if ('function' === typeof this.callback) {
+      content
+        ? this.callback({}, this.close)
+        : form.validateFields((err, values) => {
+          if (err) return;
+          this.callback(values, this.close);
+        });
     }
   }
 
@@ -87,15 +102,16 @@ class ModalForm extends BaseComponent {
    * 设置当前组件挂载的dom
    * 供销毁组件使用
    */
-  setDom = (dom: any) => {
+  setDom = (dom: HTMLDivElement, destory: boolean) => {
     this.dom = dom;
+    this.shouldDestoryInstanceOnClose = destory;
   }
 
   /**
    * 在弹窗完全关闭后销毁弹窗实例
    */
   destory = () => {
-    this.dom && ReactDom.unmountComponentAtNode(this.dom);
+    this.dom && this.shouldDestoryInstanceOnClose && unmountComponentAtNode(this.dom);
   }
 
   render() {
@@ -128,12 +144,10 @@ class ModalForm extends BaseComponent {
 
 export default (destory = true) => {
   const dom = document.createElement('div');
-  const renderedContainer = ReactDom.render(
+  const renderedContainer = render(
     <ModalForm />,
     dom
   ) as unknown as ModalForm;
-  if(destory){
-    renderedContainer.setDom(dom);
-  }
+  renderedContainer.setDom(dom, destory);
   return renderedContainer;
 };

@@ -31,6 +31,8 @@
   "devDependencies": {
     "@types/history": "^4.7.2",
     "@types/js-cookie": "^2.2.1",
+    "@types/lodash": "^4.14.123",
+    "@types/md5": "^2.1.33",
     "@types/node": "^10.12.24",
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
