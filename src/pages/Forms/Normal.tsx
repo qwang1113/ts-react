@@ -29,6 +29,13 @@ export default class Normal extends BaseComponent {
               placeholder: '请输入',
               required: true
             }
+            , {
+              label: '普通输入框',
+              dataKey: 'TextArea',
+              type: 'TextArea',
+              placeholder: '请输入',
+              required: true
+            }
           ]}
         />
       </div>

@@ -30,7 +30,7 @@ class Tables extends BaseComponent<{}, {}>{
       id = row.id;
     }
     ModalForm().show({
-      cols: 1,
+      cols: 2,
       items: id ? bindInitialValueWithSchema(
         [...AddOrEditTableSchema, generateHiddenFormItem('id', id)],
         row

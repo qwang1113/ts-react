@@ -128,6 +128,8 @@ class ModalForm extends BaseComponent<{}, IState> {
         onOk={this.checkForm}
         onCancel={this.close}
         afterClose={this.destory}
+        width={(5.2 * cols) + 'rem'}
+        bodyStyle={{minHeight: 450}}
       >
         {content ? content : (
           <GenerateForm

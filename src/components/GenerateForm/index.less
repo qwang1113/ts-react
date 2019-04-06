@@ -19,6 +19,19 @@
     }
   }
 
+  .ant-form-item-children textarea{
+    min-height: 1.5rem /* 150/100 */;
+  }
+
+  &.col-1,
+  &.col-2,
+  &.col-3{
+    .ant-form-item-children textarea{
+      min-width: 4.2rem;
+    }
+  }
+
+
   &.col-2,
   &.col-3,
   &.col-4 {
@@ -29,7 +42,6 @@
     &.col-2 .ant-form-item {
       width: 50%;
       justify-content: flex-start;
-
       .ant-form-item-label {
         width: 8em;
       }
